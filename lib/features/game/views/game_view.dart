@@ -150,6 +150,21 @@ class _GameMainPageState extends State<GameMainPage> {
     }
   }
 
+  /// Play Again
+  void playAgain() {
+    playerX = -0.2;
+    ballX = 0;
+    ballY = 0;
+    isGameOver = false;
+    isGameStarted = false;
+    bricks = [
+      //[x,y,broken=true/false]
+      [firstBrickX + 0 * (brickWidth + brickGap), firstBrickY, false],
+      [firstBrickX + 1 * (brickWidth + brickGap), firstBrickY, false],
+      [firstBrickX + 2 * (brickWidth + brickGap), firstBrickY, false]
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.sizeOf(context).height;
@@ -167,7 +182,7 @@ class _GameMainPageState extends State<GameMainPage> {
                 isGameStarted: isGameStarted),
 
             ///Game over
-            GameOver(isGameOver: isGameOver),
+            GameOver(isGameOver: isGameOver, onTap: playAgain),
 
             ///bricks
             Brick(
@@ -197,24 +212,6 @@ class _GameMainPageState extends State<GameMainPage> {
 
             ///player
             Player(playerX: playerX, playerWidth: playerWidth),
-
-            Container(
-              alignment: Alignment(playerX, 0.9),
-              child: Container(
-                color: Colors.red,
-                width: 4,
-                height: 10,
-              ),
-            ),
-
-            Container(
-              alignment: Alignment(playerX + playerWidth, 0.9),
-              child: Container(
-                color: Colors.green,
-                width: 4,
-                height: 10,
-              ),
-            ),
 
             Positioned(
                 left: 0,
