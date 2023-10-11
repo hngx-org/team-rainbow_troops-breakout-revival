@@ -4,8 +4,8 @@ import 'package:brick_breaker/utils/widgets/custom_input_field.dart';
 
 import '../../../utils/widgets/custom_text.dart';
 
-class LoginView extends StatelessWidget {
-  LoginView({
+class SignupView extends StatelessWidget {
+  SignupView({
     super.key,
   });
 
@@ -20,15 +20,15 @@ class LoginView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color(0xff303B52),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 30.0),
+        padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 30.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'Welcome Back',
+                'Create Account.',
                 style: TextStyle(
-                    fontSize: 25.0,
+                    fontSize: 23.0,
                     fontWeight: FontWeight.w500,
                     color: Colors.white),
               ),
@@ -38,7 +38,7 @@ class LoginView extends StatelessWidget {
               Stack(
                 alignment: AlignmentDirectional.center,
                 children: [
-                  Image.asset('assets/images/ellipse1.png'),
+                  Image.asset('assets/images/ellipse2.png'),
                   Image.asset('assets/images/Group.png')
                 ],
               ),
@@ -47,7 +47,7 @@ class LoginView extends StatelessWidget {
               ),
               CustomTextFormField(
                 textEditingController: usernameController,
-                hintText: 'Username or email',
+                hintText: 'Username',
                 icon: Icon(Icons.person),
               ),
               SizedBox(
@@ -59,21 +59,33 @@ class LoginView extends StatelessWidget {
                 icon: Icon(Icons.key_outlined),
               ),
               SizedBox(
+                height: height * 0.02,
+              ),
+              CustomTextFormField(
+                textEditingController: usernameController,
+                hintText: 'Enter Email',
+                icon: Icon(Icons.mail),
+              ),
+              SizedBox(
                 height: height * 0.03,
               ),
               CustomButton(
                 onPress: () {},
-                buttonchild: 'Login',
+                buttonchild: 'Sign up',
                 width: width * 0.35,
                 height: height * 0.08,
               ),
               SizedBox(
                 height: height * 0.03,
               ),
+              Text(
+                'Already have an account?',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18.0),
+              ),
               CustomText(
                 onpressed: () {},
-                text: 'Forgot your username or password?',
-                color: Colors.black,
+                text: 'Go back',
+                color: Color(0xff18A4DD),
               )
             ],
           ),
