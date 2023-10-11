@@ -1,9 +1,14 @@
 import 'dart:async';
 
 import 'package:brick_breaker/features/game/models/direction_enums.dart';
+import 'package:brick_breaker/features/game/widgets/game_over.dart';
 import 'package:brick_breaker/utils/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
+import '../widgets/ball.dart';
+import '../widgets/player.dart';
+import '../widgets/start_play.dart';
+import '../widgets/brick.dart';
 
 class GameMainPage extends StatefulWidget {
   const GameMainPage({super.key});
@@ -16,14 +21,35 @@ class _GameMainPageState extends State<GameMainPage> {
   ///ball variables
   double ballX = 0;
   double ballY = 0;
-  var ballDirection = Direction.DOWN;
+  double ballXIncrements = 0.01;
+  double ballYIncrements = 0.01;
+  var ballXDirection = Direction.LEFT;
+  var ballYDirection = Direction.DOWN;
 
   ///player variables
   double playerX = 0;
-  double playerWidth = 0.3;
+  double playerWidth = 0.5;
+
+  ///Brick variables
+  static double firstBrickX = -1 + wallGap;
+  static double firstBrickY = -0.8;
+  static double brickWidth = 0.5;
+  static double brickHeight = 0.05;
+  static int brickCount = 3;
+  static double brickGap = 0.01;
+  static double wallGap =
+      0.5 * (2 - brickCount * brickWidth - (brickCount - 1) * brickGap);
+
+  List bricks = [
+    //[x,y,broken=true/false]
+    [firstBrickX + 0 * (brickWidth + brickGap), firstBrickY, false],
+    [firstBrickX + 1 * (brickWidth + brickGap), firstBrickY, false],
+    [firstBrickX + 2 * (brickWidth + brickGap), firstBrickY, false]
+  ];
 
   /// Game Settings
   bool isGameStarted = false;
+  bool isGameOver = false;
 
   /// Game Start
   void startGame() {
@@ -33,20 +59,39 @@ class _GameMainPageState extends State<GameMainPage> {
       moveBall();
       //direction
       updateDirection();
+
+      //Check if player dead
+      if (isPlayerDead()) {
+        timer.cancel();
+        isGameOver = true;
+      }
+
+      //brick broken
+      checkForBrokenBreak();
     });
+  }
+
+  //Check if player dead
+  bool isPlayerDead() {
+    if (ballY >= 1) {
+      return true;
+    }
+    return false;
   }
 
   /// Player Movement
   /// Move Right
   void moveLeft() {
-    if (!(playerX - 0.2 < -1)) {
-      playerX -= 0.2;
-    }
+    setState(() {
+      if (!(playerX - 0.2 < -1)) {
+        playerX -= 0.2;
+      }
+    });
   }
 
   /// Move Right
   void moveRight() {
-    if (!(playerX + 0.2 > 1)) {
+    if (!(playerX + playerWidth >= 1)) {
       playerX += 0.2;
     }
   }
@@ -54,22 +99,55 @@ class _GameMainPageState extends State<GameMainPage> {
   ///ball direction and movement
   void moveBall() {
     setState(() {
-      if (ballDirection == Direction.DOWN) {
-        ballY += 0.01;
-      } else if (ballDirection == Direction.UP) {
-        ballY -= 0.01;
+      ///horizontal movement
+      if (ballXDirection == Direction.LEFT) {
+        ballX -= ballXIncrements;
+      } else if (ballXDirection == Direction.RIGHT) {
+        ballX += ballXIncrements;
+      }
+
+      ///vertical movement
+      if (ballYDirection == Direction.DOWN) {
+        ballY += ballYIncrements;
+      } else if (ballYDirection == Direction.UP) {
+        ballY -= ballYIncrements;
       }
     });
   }
 
   void updateDirection() {
     setState(() {
+      //move up
       if (ballY >= 0.9 && ballX >= playerX && ballX <= playerX + playerWidth) {
-        ballDirection = Direction.UP;
+        ballYDirection = Direction.UP;
+        //move down
       } else if (ballY <= -0.9) {
-        ballDirection = Direction.DOWN;
+        ballYDirection = Direction.DOWN;
+      }
+      //move left
+      if (ballX >= 1) {
+        ballXDirection = Direction.LEFT;
+      }
+      //move right
+      else if (ballX <= -1) {
+        ballXDirection = Direction.RIGHT;
       }
     });
+  }
+
+  ///Check if brick broken
+  void checkForBrokenBreak() {
+    for (var i = 0; i < bricks.length; i++) {
+      if (ballX >= bricks[i][0] &&
+          ballX <= bricks[i][0] + brickWidth &&
+          ballY <= bricks[i][1] + brickHeight &&
+          bricks[i][2] == false) {
+        setState(() {
+          bricks[i][2] = true;
+          ballYDirection = Direction.DOWN;
+        });
+      }
+    }
   }
 
   @override
@@ -88,11 +166,56 @@ class _GameMainPageState extends State<GameMainPage> {
                 onTap: startGame,
                 isGameStarted: isGameStarted),
 
-            ///player
-            Player(playerX: playerX, playerWidth: playerWidth),
+            ///Game over
+            GameOver(isGameOver: isGameOver),
+
+            ///bricks
+            Brick(
+              brickX: bricks[0][0],
+              brickY: bricks[0][1],
+              brickHeight: brickHeight,
+              brickWidth: brickWidth,
+              isBrickBroken: bricks[0][2],
+            ),
+            Brick(
+              brickX: bricks[1][0],
+              brickY: bricks[1][1],
+              brickHeight: brickHeight,
+              brickWidth: brickWidth,
+              isBrickBroken: bricks[1][2],
+            ),
+            Brick(
+              brickX: bricks[2][0],
+              brickY: bricks[2][1],
+              brickHeight: brickHeight,
+              brickWidth: brickWidth,
+              isBrickBroken: bricks[2][2],
+            ),
 
             ///ball
             Ball(ballX: ballX, ballY: ballY),
+
+            ///player
+            Player(playerX: playerX, playerWidth: playerWidth),
+
+            Container(
+              alignment: Alignment(playerX, 0.9),
+              child: Container(
+                color: Colors.red,
+                width: 4,
+                height: 10,
+              ),
+            ),
+
+            Container(
+              alignment: Alignment(playerX + playerWidth, 0.9),
+              child: Container(
+                color: Colors.green,
+                width: 4,
+                height: 10,
+              ),
+            ),
+
             Positioned(
                 left: 0,
                 bottom: 0,
@@ -121,98 +244,5 @@ class _GameMainPageState extends State<GameMainPage> {
         ),
       ),
     );
-  }
-}
-
-class Player extends StatelessWidget {
-  const Player({super.key, required this.playerX, required this.playerWidth});
-
-  final double playerX;
-  final double playerWidth;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        alignment: Alignment(playerX, 0.9),
-        child: ClipRRect(
-          borderRadius: const BorderRadius.all(Radius.circular(30)),
-          child: Container(
-            height: 10,
-            width: MediaQuery.sizeOf(context).width * playerWidth / 2,
-            decoration: const BoxDecoration(
-              color: AppColors.greenColor,
-            ),
-          ),
-        ));
-  }
-}
-
-class Ball extends StatelessWidget {
-  const Ball({
-    super.key,
-    required this.ballX,
-    required this.ballY,
-  });
-
-  final double ballX;
-  final double ballY;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment(ballX, ballY),
-      child: Container(
-        height: 15,
-        width: 15,
-        decoration: const BoxDecoration(
-          color: AppColors.playerColor,
-          shape: BoxShape.circle,
-        ),
-      ),
-    );
-  }
-}
-
-class StartPlay extends StatelessWidget {
-  const StartPlay({
-    super.key,
-    required this.width,
-    required this.height,
-    required this.onTap,
-    required this.isGameStarted,
-  });
-
-  final double width;
-  final double height;
-  final VoidCallback onTap;
-  final bool isGameStarted;
-
-  @override
-  Widget build(BuildContext context) {
-    return isGameStarted
-        ? const SizedBox.shrink()
-        : Container(
-            alignment: const Alignment(0, -0.2),
-            child: InkWell(
-              onTap: onTap,
-              child: Ink(
-                width: width * .3,
-                height: height * .06,
-                decoration: const BoxDecoration(
-                    color: AppColors.brickColorPrimary,
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                child: Center(
-                  child: Text(
-                    'Play',
-                    style: GoogleFonts.russoOne(
-                        fontWeight: FontWeight.w400,
-                        height: .3,
-                        fontSize: 30,
-                        color: AppColors.greenColor),
-                  ),
-                ),
-              ),
-            ),
-          );
   }
 }
