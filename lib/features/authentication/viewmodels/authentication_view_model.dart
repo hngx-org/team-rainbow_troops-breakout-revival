@@ -1,10 +1,9 @@
 import 'package:brick_breaker/features/authentication/services/auth_service.dart';
-import 'package:brick_breaker/features/authentication/services/dialog_service.dart';
 import 'package:flutter/material.dart';
+import 'package:brick_breaker/features/authentication/services/global.dart';
 
 class AuthViewModel extends ChangeNotifier {
   final AuthenticationService _authenticationService = AuthenticationService();
-  final DialogService _dialogService = DialogService();
 
   bool _isBusy = false;
   bool get busy => _isBusy;
@@ -18,6 +17,11 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  snackBar(String title) {
+    SnackBar(content: Text(title));
+    snackBarKey.currentState?.showSnackBar(snackBar(title));
+  }
+
   Future signUp(
       {String? email, String? password, Function? onCallBack, Bu}) async {
     setBusy(true);
@@ -29,15 +33,10 @@ class AuthViewModel extends ChangeNotifier {
       if (result) {
         onCallBack!();
       } else {
-        await _dialogService.showDialog(
-            title: 'Sign up Failure',
-            description: 'General Signup Failure, please try again later');
+        snackBar('General Signup Failure, please try again later');
       }
     } else {
-      await _dialogService.showDialog(
-        title: 'SignUp Failure',
-        description: result,
-      );
+      snackBar(result);
     }
   }
 
@@ -50,16 +49,10 @@ class AuthViewModel extends ChangeNotifier {
       if (result) {
         onCallBack!();
       } else {
-        await _dialogService.showDialog(
-            title: "Login Failed",
-            description:
-                "Couldn't login at this moment. please try again later");
+        snackBar("Couldn't login at this moment. please try again later");
       }
     } else {
-      await _dialogService.showDialog(
-        title: 'Login Failure',
-        description: result,
-      );
+      snackBar(result);
     }
   }
 }
