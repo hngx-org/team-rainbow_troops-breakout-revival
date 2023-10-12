@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "670296364785",
+    "project_id": "brick-breaker-aa6fa",
+    "storage_bucket": "brick-breaker-aa6fa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:670296364785:android:a0538525a055881bef3b50",
+        "android_client_info": {
+          "package_name": "org.hngx.brick_breaker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgNJmkTHGT9K3BNGJR5FYuFEGX0MqAT30"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

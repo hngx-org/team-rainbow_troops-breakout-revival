@@ -8,9 +8,8 @@ class CustomTextFormField extends StatelessWidget {
       this.enabled,
       this.onChanged,
       this.keyboardtype,
-      this.hintText
-      // this.obscuretext
-      });
+      this.hintText,
+      this.obscuretext = false});
 
   final TextEditingController? textEditingController;
   final Widget? icon;
@@ -18,11 +17,12 @@ class CustomTextFormField extends StatelessWidget {
   final TextInputType? keyboardtype;
   final void Function(String)? onChanged;
   final String? hintText;
+  final bool obscuretext;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      obscureText: true,
+      obscureText: obscuretext,
       controller: textEditingController,
       cursorColor: Colors.black,
       keyboardType: keyboardtype,
