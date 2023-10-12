@@ -1,6 +1,5 @@
 import 'package:brick_breaker/features/authentication/services/global.dart';
 import 'package:brick_breaker/features/authentication/viewmodels/authentication_view_model.dart';
-import 'package:brick_breaker/features/authentication/views/login_view.dart';
 import 'package:brick_breaker/features/authentication/views/signup_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

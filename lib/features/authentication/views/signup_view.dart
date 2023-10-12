@@ -24,17 +24,18 @@ class SignupView extends StatelessWidget {
 
     AuthViewModel authViewModel = context.watch<AuthViewModel>();
     return Scaffold(
-      backgroundColor: Color(0xff303B52),
+      backgroundColor: const Color(0xff303B52),
       body: ModalProgressHUD(
-        color: Color(0xff303B49),
+        color: const Color(0xff303B49),
         inAsyncCall: authViewModel.busy,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 30.0),
+          padding: const EdgeInsets.only(
+              top: 50.0, right: 30.0, left: 30.0, bottom: 0.0),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'Create Account.',
                   style: TextStyle(
                       fontSize: 23.0,
@@ -57,7 +58,7 @@ class SignupView extends StatelessWidget {
                 CustomTextFormField(
                   textEditingController: _usernameController,
                   hintText: 'Username',
-                  icon: Icon(Icons.person),
+                  icon: const Icon(Icons.person),
                 ),
                 SizedBox(
                   height: height * 0.02,
@@ -66,7 +67,7 @@ class SignupView extends StatelessWidget {
                   textEditingController: _passwordController,
                   hintText: 'Enter Password',
                   obscuretext: true,
-                  icon: Icon(Icons.key_outlined),
+                  icon: const Icon(Icons.key_outlined),
                 ),
                 SizedBox(
                   height: height * 0.02,
@@ -74,7 +75,7 @@ class SignupView extends StatelessWidget {
                 CustomTextFormField(
                   textEditingController: _emailController,
                   hintText: 'Enter Email',
-                  icon: Icon(Icons.mail),
+                  icon: const Icon(Icons.mail),
                 ),
                 SizedBox(
                   height: height * 0.03,
@@ -100,9 +101,9 @@ class SignupView extends StatelessWidget {
                   height: height * 0.08,
                 ),
                 SizedBox(
-                  height: height * 0.03,
+                  height: height * 0.02,
                 ),
-                Text(
+                const Text(
                   'Already have an account?',
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18.0),
                 ),
@@ -111,8 +112,8 @@ class SignupView extends StatelessWidget {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => LoginView()));
                   },
-                  text: 'Go back',
-                  color: Color(0xff18A4DD),
+                  text: 'Log in',
+                  color: const Color(0xff18A4DD),
                 )
               ],
             ),

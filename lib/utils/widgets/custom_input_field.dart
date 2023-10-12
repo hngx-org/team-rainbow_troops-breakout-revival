@@ -29,7 +29,7 @@ class CustomTextFormField extends StatelessWidget {
       textCapitalization: TextCapitalization.words,
       decoration: InputDecoration(
           hintText: hintText,
-          disabledBorder: UnderlineInputBorder(
+          disabledBorder: const UnderlineInputBorder(
             borderSide: BorderSide(color: Color(0xff6AA4BA), width: 3.0),
           ),
           enabledBorder: UnderlineInputBorder(
@@ -47,7 +47,7 @@ class CustomTextFormField extends StatelessWidget {
           filled: true,
           fillColor: Colors.white,
           prefixIcon: icon,
-          contentPadding: EdgeInsets.symmetric(vertical: 20.0)),
+          contentPadding: const EdgeInsets.symmetric(vertical: 20.0)),
       onChanged: onChanged,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       enabled: enabled,

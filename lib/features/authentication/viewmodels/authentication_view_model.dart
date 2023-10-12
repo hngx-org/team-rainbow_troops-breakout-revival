@@ -22,8 +22,11 @@ class AuthViewModel extends ChangeNotifier {
     snackBarKey.currentState?.showSnackBar(snackBar(title));
   }
 
-  Future signUp(
-      {String? email, String? password, Function? onCallBack, Bu}) async {
+  Future signUp({
+    String? email,
+    String? password,
+    Function? onCallBack,
+  }) async {
     setBusy(true);
     var result = await _authenticationService.signUpWithEmail(
         email: email!, password: password!);

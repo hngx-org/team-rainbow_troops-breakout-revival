@@ -22,9 +22,9 @@ class LoginView extends StatelessWidget {
     AuthViewModel authViewModel = context.watch<AuthViewModel>();
 
     return Scaffold(
-      backgroundColor: Color(0xff303B52),
+      backgroundColor: const Color(0xff303B52),
       body: ModalProgressHUD(
-        color: Color(0xff303B49),
+        color: const Color(0xff303B49),
         inAsyncCall: authViewModel.busy,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 30.0),
@@ -32,7 +32,7 @@ class LoginView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'Welcome Back',
                   style: TextStyle(
                       fontSize: 25.0,
@@ -55,7 +55,7 @@ class LoginView extends StatelessWidget {
                 CustomTextFormField(
                   textEditingController: _emailController,
                   hintText: 'Username or email',
-                  icon: Icon(Icons.person),
+                  icon: const Icon(Icons.person),
                 ),
                 SizedBox(
                   height: height * 0.02,
@@ -63,7 +63,8 @@ class LoginView extends StatelessWidget {
                 CustomTextFormField(
                   textEditingController: _passwordController,
                   hintText: 'Enter Password',
-                  icon: Icon(Icons.key_outlined),
+                  obscuretext: true,
+                  icon: const Icon(Icons.key_outlined),
                 ),
                 SizedBox(
                   height: height * 0.03,
@@ -79,7 +80,8 @@ class LoginView extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => RandomScreen()));
+                                    builder: (context) =>
+                                        const RandomScreen()));
                           });
                     }
                   },

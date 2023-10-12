@@ -21,17 +21,17 @@ class CustomButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 20.0),
         child: TextButton(
           onPressed: onPress,
-          child: Text(
-            buttonchild,
-            style: TextStyle(color: Colors.white, fontSize: 18.0),
-          ),
           style: TextButton.styleFrom(
               minimumSize: Size(width, height),
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
               ),
-              side: BorderSide(width: 1.0, color: Color(0xff666B80)),
-              backgroundColor: Color(0xff303B52)),
+              side: const BorderSide(width: 1.0, color: Color(0xff666B80)),
+              backgroundColor: const Color(0xff303B52)),
+          child: Text(
+            buttonchild,
+            style: const TextStyle(color: Colors.white, fontSize: 18.0),
+          ),
         ));
   }
 }
