@@ -4,6 +4,7 @@ import 'package:brick_breaker/features/game/models/direction_enums.dart';
 import 'package:brick_breaker/features/game/widgets/game_over.dart';
 import 'package:brick_breaker/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../widgets/ball.dart';
 import '../widgets/player.dart';
@@ -21,7 +22,7 @@ class _GameMainPageState extends State<GameMainPage> {
   ///ball variables
   double ballX = 0;
   double ballY = 0;
-  double ballXIncrements = 0.01;
+  double ballXIncrements = 0.001;
   double ballYIncrements = 0.01;
   var ballXDirection = Direction.LEFT;
   var ballYDirection = Direction.DOWN;
@@ -32,20 +33,18 @@ class _GameMainPageState extends State<GameMainPage> {
 
   ///Brick variables
   static double firstBrickX = -1 + wallGap;
-  static double firstBrickY = -0.8;
-  static double brickWidth = 0.5;
+  static double firstBrickY = -0.9;
+  static double brickWidth = 0.3;
   static double brickHeight = 0.05;
-  static int brickCount = 3;
+  static int brickCount = 5;
   static double brickGap = 0.01;
   static double wallGap =
       0.5 * (2 - brickCount * brickWidth - (brickCount - 1) * brickGap);
 
-  List bricks = [
+  List bricks = List.generate(brickCount, (i) {
     //[x,y,broken=true/false]
-    [firstBrickX + 0 * (brickWidth + brickGap), firstBrickY, false],
-    [firstBrickX + 1 * (brickWidth + brickGap), firstBrickY, false],
-    [firstBrickX + 2 * (brickWidth + brickGap), firstBrickY, false]
-  ];
+    return [firstBrickX + i * (brickWidth + brickGap), firstBrickY, false];
+  });
 
   /// Game Settings
   bool isGameStarted = false;
@@ -64,10 +63,11 @@ class _GameMainPageState extends State<GameMainPage> {
       if (isPlayerDead()) {
         timer.cancel();
         isGameOver = true;
+        score = 0;
       }
 
       //brick broken
-      checkForBrokenBreak();
+      checkForBrokenBrick();
     });
   }
 
@@ -82,11 +82,9 @@ class _GameMainPageState extends State<GameMainPage> {
   /// Player Movement
   /// Move Right
   void moveLeft() {
-    setState(() {
-      if (!(playerX - 0.2 < -1)) {
-        playerX -= 0.2;
-      }
-    });
+    if (!(playerX - 0.2 < -1)) {
+      playerX -= 0.2;
+    }
   }
 
   /// Move Right
@@ -101,9 +99,17 @@ class _GameMainPageState extends State<GameMainPage> {
     setState(() {
       ///horizontal movement
       if (ballXDirection == Direction.LEFT) {
-        ballX -= ballXIncrements;
+        if (ballX == 0) {
+          ballX -= ballXIncrements;
+        } else {
+          ballX -= (ballXIncrements += 0.00000001);
+        }
       } else if (ballXDirection == Direction.RIGHT) {
-        ballX += ballXIncrements;
+        if (ballX == 0) {
+          ballX += ballXIncrements;
+        } else {
+          ballX += (ballXIncrements += 0.0000001);
+        }
       }
 
       ///vertical movement
@@ -135,14 +141,17 @@ class _GameMainPageState extends State<GameMainPage> {
     });
   }
 
+  var score = 0;
+
   ///Check if brick broken
-  void checkForBrokenBreak() {
+  void checkForBrokenBrick() {
     for (var i = 0; i < bricks.length; i++) {
       if (ballX >= bricks[i][0] &&
           ballX <= bricks[i][0] + brickWidth &&
           ballY <= bricks[i][1] + brickHeight &&
           bricks[i][2] == false) {
         setState(() {
+          score += 1;
           bricks[i][2] = true;
           ballYDirection = Direction.DOWN;
         });
@@ -152,92 +161,119 @@ class _GameMainPageState extends State<GameMainPage> {
 
   /// Play Again
   void playAgain() {
-    playerX = -0.2;
-    ballX = 0;
-    ballY = 0;
-    isGameOver = false;
-    isGameStarted = false;
-    bricks = [
-      //[x,y,broken=true/false]
-      [firstBrickX + 0 * (brickWidth + brickGap), firstBrickY, false],
-      [firstBrickX + 1 * (brickWidth + brickGap), firstBrickY, false],
-      [firstBrickX + 2 * (brickWidth + brickGap), firstBrickY, false]
-    ];
+    setState(() {
+      score = 0;
+      playerX = -0.2;
+      ballX = 0;
+      ballY = 0;
+      isGameOver = false;
+      isGameStarted = false;
+      bricks = List.generate(brickCount, (i) {
+        //[x,y,broken=true/false]
+        return [firstBrickX + i * (brickWidth + brickGap), firstBrickY, false];
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.sizeOf(context).height;
     final width = MediaQuery.sizeOf(context).width;
-    return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      body: Center(
-        child: Stack(
-          children: [
-            ///tap to play widget
-            StartPlay(
-                width: width,
-                height: height,
-                onTap: startGame,
-                isGameStarted: isGameStarted),
-
-            ///Game over
-            GameOver(isGameOver: isGameOver, onTap: playAgain),
-
-            ///bricks
-            Brick(
-              brickX: bricks[0][0],
-              brickY: bricks[0][1],
-              brickHeight: brickHeight,
-              brickWidth: brickWidth,
-              isBrickBroken: bricks[0][2],
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          leadingWidth: 120,
+          leading: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Score: $score',
+              style: GoogleFonts.rubikGemstones(fontSize: 22),
             ),
-            Brick(
-              brickX: bricks[1][0],
-              brickY: bricks[1][1],
-              brickHeight: brickHeight,
-              brickWidth: brickWidth,
-              isBrickBroken: bricks[1][2],
-            ),
-            Brick(
-              brickX: bricks[2][0],
-              brickY: bricks[2][1],
-              brickHeight: brickHeight,
-              brickWidth: brickWidth,
-              isBrickBroken: bricks[2][2],
-            ),
+          ),
+        ),
+        backgroundColor: AppColors.backgroundColor,
+        body: Center(
+          child: Stack(
+            children: [
+              ///tap to play widget
+              StartPlay(
+                  width: width,
+                  height: height,
+                  onTap: startGame,
+                  isGameStarted: isGameStarted),
 
-            ///ball
-            Ball(ballX: ballX, ballY: ballY),
+              ///Game over
+              GameOver(isGameOver: isGameOver, onTap: playAgain),
 
-            ///player
-            Player(playerX: playerX, playerWidth: playerWidth),
+              Brick(
+                brickX: bricks[0][0],
+                brickY: bricks[0][1],
+                brickHeight: brickHeight,
+                brickWidth: brickWidth,
+                isBrickBroken: bricks[0][2],
+              ),
+              Brick(
+                brickX: bricks[1][0],
+                brickY: bricks[1][1],
+                brickHeight: brickHeight,
+                brickWidth: brickWidth,
+                isBrickBroken: bricks[1][2],
+              ),
+              Brick(
+                brickX: bricks[2][0],
+                brickY: bricks[2][1],
+                brickHeight: brickHeight,
+                brickWidth: brickWidth,
+                isBrickBroken: bricks[2][2],
+              ),
+              Brick(
+                brickX: bricks[3][0],
+                brickY: bricks[3][1],
+                brickHeight: brickHeight,
+                brickWidth: brickWidth,
+                isBrickBroken: bricks[3][2],
+              ),
+              Brick(
+                brickX: bricks[4][0],
+                brickY: bricks[4][1],
+                brickHeight: brickHeight,
+                brickWidth: brickWidth,
+                isBrickBroken: bricks[4][2],
+              ),
 
-            Positioned(
-                left: 0,
-                bottom: 0,
-                child: GestureDetector(
-                  onTap: moveLeft,
-                  onDoubleTap: moveLeft,
-                  child: SizedBox(
-                    height: 100,
-                    width: MediaQuery.sizeOf(context).width * .5,
-                    child: const Text('Tap'),
-                  ),
-                )),
-            Positioned(
-                right: -120,
-                bottom: 0,
-                child: GestureDetector(
-                  onTap: moveRight,
-                  onDoubleTap: moveRight,
-                  child: SizedBox(
-                    height: 100,
-                    width: MediaQuery.sizeOf(context).width * .5,
-                    child: const Text('Tap'),
-                  ),
-                ))
-          ],
+              ///ball
+              Ball(ballX: ballX, ballY: ballY),
+
+              ///player
+              Player(playerX: playerX, playerWidth: playerWidth),
+
+              Positioned(
+                  left: 0,
+                  bottom: 0,
+                  child: GestureDetector(
+                    onTap: moveLeft,
+                    onDoubleTap: moveLeft,
+                    child: SizedBox(
+                      height: 100,
+                      width: MediaQuery.sizeOf(context).width * .5,
+                      child: const Text('Tap'),
+                    ),
+                  )),
+              Positioned(
+                  right: -120,
+                  bottom: 0,
+                  child: GestureDetector(
+                    onTap: moveRight,
+                    onDoubleTap: moveRight,
+                    child: SizedBox(
+                      height: 100,
+                      width: MediaQuery.sizeOf(context).width * .5,
+                      child: const Text('Tap'),
+                    ),
+                  ))
+            ],
+          ),
         ),
       ),
     );
