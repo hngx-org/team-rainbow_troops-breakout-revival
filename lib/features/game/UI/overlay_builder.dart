@@ -1,4 +1,5 @@
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
+import 'package:brick_breaker/features/game/constants.dart';
 import 'package:brick_breaker/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -70,7 +71,11 @@ Widget _resetGameButton(BuildContext context, Forge2dGameWorld game) {
     style: OutlinedButton.styleFrom(
         side: const BorderSide(color: AppColors.brickColorPrimary)),
     onPressed: () => game.resetGame(),
-    icon: const Icon(Icons.restart_alt_outlined),
-    label: const Text('Replay'),
+    icon: (game.gameState == GameState.lost)
+        ? const Icon(Icons.restart_alt_outlined)
+        : const Icon(Icons.navigate_next),
+    label: (game.gameState == GameState.lost)
+        ? const Text('Replay')
+        : const Text('Play next level'),
   );
 }

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
 import 'package:brick_breaker/features/game/components/game_brick.dart';
-import 'package:brick_breaker/utils/constants.dart';
+import 'package:brick_breaker/features/game/constants.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flutter/painting.dart';
@@ -35,6 +35,15 @@ class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
 
     if (children.isEmpty) {
       gameRef.gameState = GameState.won;
+      if (gameRef.gameLevel == GameLevel.one) {
+        gameRef.gameLevel = GameLevel.two;
+      } else if (gameRef.gameLevel == GameLevel.two) {
+        gameRef.gameLevel = GameLevel.three;
+      } else if (gameRef.gameLevel == GameLevel.three) {
+        gameRef.gameLevel = GameLevel.four;
+      } else if (gameRef.gameLevel == GameLevel.four) {
+        gameRef.gameLevel = GameLevel.five;
+      }
     }
     super.update(dt);
   }
@@ -56,9 +65,11 @@ class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
   static const lightness = 0.5;
 
   List<Color> _colorSet(int count) => List<Color>.generate(
-        count,
-        (index) => HSLColor.fromColor(AppColors.brickColorPrimary).toColor(),
-      );
+      count,
+      (index) => HSLColor.fromAHSL(
+              transparency, index / count * 360, saturation, lightness)
+          .toColor(),
+      growable: false);
 
   Future<void> _buildWall() async {
     final wallSize = size ??

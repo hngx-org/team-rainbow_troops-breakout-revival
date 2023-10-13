@@ -1,9 +1,11 @@
+import 'package:brick_breaker/features/game/components/arena.dart';
+import 'package:brick_breaker/features/game/components/brick_wall.dart';
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/painting.dart';
 
-class Ball extends BodyComponent<Forge2dGameWorld> {
+class Ball extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
   final Vector2 ballPosition;
   final double radius;
 
@@ -19,6 +21,24 @@ class Ball extends BodyComponent<Forge2dGameWorld> {
     stops: const [0.0, 0.5, 1.0],
     radius: 0.95,
   );
+
+  @override
+  void beginContact(Object other, Contact contact) {
+    if (other is Arena) {
+      body.linearVelocity = Vector2(75.0, 75.0);
+    } else if (other is BrickWall) {
+      body.linearVelocity = Vector2(100.0, 100.0);
+    }
+  }
+
+  @override
+  void endContact(Object other, Contact contact) {
+    if (other is Arena) {
+      body.linearVelocity = Vector2(75.0, 75.0);
+    } else if (other is BrickWall) {
+      body.linearVelocity = Vector2(100.0, 100.0);
+    }
+  }
 
   @override
   void render(Canvas canvas) {

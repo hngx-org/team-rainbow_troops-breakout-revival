@@ -3,19 +3,10 @@ import 'package:brick_breaker/features/game/components/ball.dart';
 import 'package:brick_breaker/features/game/components/brick_wall.dart';
 import 'package:brick_breaker/features/game/components/dead_zone.dart.dart';
 import 'package:brick_breaker/features/game/components/paddle.dart';
+import 'package:brick_breaker/features/game/constants.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
-
-///Game States
-enum GameState {
-  initializing,
-  ready,
-  running,
-  paused,
-  won,
-  lost,
-}
 
 ///GameLoop where everything loads, initializes and updates.
 class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
@@ -29,14 +20,15 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
   Forge2dGameWorld() : super(gravity: Vector2.zero(), zoom: 20);
 
   GameState gameState = GameState.initializing;
+  GameLevel? gameLevel;
 
   ///Called when user taps on the screen
   @override
   void onTapDown(TapDownEvent event) {
     if (gameState == GameState.ready) {
       overlays.remove('PreGame');
-      _ball.body.applyLinearImpulse(Vector2(100000.0, 100000.0));
-      _ball.body.applyAngularImpulse(10000.0);
+      gameLevel = GameLevel.one;
+      _ball.body.linearVelocity = Vector2(50.0, 50.0);
       gameState = GameState.running;
     }
     super.onTapDown(event);
@@ -66,8 +58,8 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
 
     _brickWall = BrickWall(
       position: brickWallPosition,
-      rows: 5,
-      columns: 6,
+      rows: 2,
+      columns: 5,
       gap: 0.5,
     );
 
