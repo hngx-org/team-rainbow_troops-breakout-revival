@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:brick_breaker/utils/constants.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
@@ -12,6 +15,30 @@ class Paddle extends BodyComponent with DragCallbacks {
     required this.ground,
     required this.paddlePosition,
   });
+
+  void reset() {
+    body.setTransform(paddlePosition, angle);
+    body.angularVelocity = 0.0;
+    body.linearVelocity = Vector2.zero();
+  }
+
+  @override
+  void render(Canvas canvas) {
+    final shape = body.fixtures.first.shape as PolygonShape;
+
+    final paint = Paint()
+      ..color = AppColors.greenColor
+      ..style = PaintingStyle.fill;
+
+    canvas.drawRect(
+        Rect.fromLTRB(
+          shape.vertices[0].x,
+          shape.vertices[0].y,
+          shape.vertices[2].x,
+          shape.vertices[2].y,
+        ),
+        paint);
+  }
 
   MouseJoint? _mouseJoint;
   Vector2 dragStartPosition = Vector2.zero();

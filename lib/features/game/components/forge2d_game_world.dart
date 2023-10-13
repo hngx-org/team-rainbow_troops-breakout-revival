@@ -7,6 +7,7 @@ import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 
+///Game States
 enum GameState {
   initializing,
   ready,
@@ -16,49 +17,75 @@ enum GameState {
   lost,
 }
 
-class Forge2dGameWorld extends Forge2DGame with DragCallbacks {
-  Ball? _ball;
+///GameLoop where everything loads, initializes and updates.
+class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
+  late final Ball _ball;
+  late final Arena _arena;
+  late final Paddle _paddle;
+  late final BrickWall _brickWall;
+  late final DeadZone _deadZone;
+
+  ///We have set the gravity in the game to zero and zoom the camera.
   Forge2dGameWorld() : super(gravity: Vector2.zero(), zoom: 20);
 
   GameState gameState = GameState.initializing;
 
+  ///Called when user taps on the screen
+  @override
+  void onTapDown(TapDownEvent event) {
+    if (gameState == GameState.ready) {
+      overlays.remove('PreGame');
+      _ball.body.applyLinearImpulse(Vector2(100000.0, 100000.0));
+      _ball.body.applyAngularImpulse(10000.0);
+      gameState = GameState.running;
+    }
+    super.onTapDown(event);
+  }
+
+  ///This is the load method where all the game components are initialized and
+  ///loaded inside the game loop.
   @override
   Future<void> onLoad() async {
     await _initializeGame();
-    _ball?.body.applyLinearImpulse(Vector2(-6000, -6000));
   }
 
   Future<void> _initializeGame() async {
-    final arena = Arena();
-    await add(arena);
+    //Arena is the game playing ground.
+    _arena = Arena();
+    await add(_arena);
 
+    //initialization of the ball
     _ball = Ball(
-      ballPosition: size / 2,
+      ballPosition: Vector2(size.x / 2.0, size.y / 2.0 + 10.0),
       radius: 5.0,
     );
-    await add(_ball!);
+    await add(_ball);
 
+    //initialization of brick wall
     final brickWallPosition = Vector2(0.0, size.y * 0.075);
 
-    final brickWall = BrickWall(
+    _brickWall = BrickWall(
       position: brickWallPosition,
       rows: 5,
       columns: 6,
       gap: 0.5,
     );
 
-    await add(brickWall);
+    await add(_brickWall);
 
+//initialization of dead zone if the player goes down this region game is over.
     final deadZonePosition =
         Vector2(size.x / 2.0, size.y - (size.y * 0.1) / 2.0);
     final deadZoneSize = Size(size.x, size.y * 0.1);
 
-    final deadZone = DeadZone(
+    _deadZone = DeadZone(
       size: deadZoneSize,
       deadZonePosition: deadZonePosition,
     );
-    await add(deadZone);
+    await add(_deadZone);
 
+//Paddle is where player comes into play. This is the component which has drag
+//callbacks so that user can move the paddle to play game.
     const paddleSize = Size(60.0, 8.0);
 
     final paddlePosition = Vector2(
@@ -66,21 +93,43 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks {
       size.y - deadZoneSize.height - paddleSize.height / 2.0,
     );
 
-    final paddle = Paddle(
+    _paddle = Paddle(
       size: paddleSize,
-      ground: arena,
+      ground: _arena,
       paddlePosition: paddlePosition,
     );
 
-    await add(paddle);
+    await add(_paddle);
     gameState = GameState.ready;
+    overlays.add('PreGame');
   }
 
+  ///Reset Game method to be called at postGame state Won/Lost
+  Future<void> resetGame() async {
+//Game state initializing with resetting components to their initial position
+    gameState = GameState.initializing;
+    _ball.reset();
+    _paddle.reset();
+    await _brickWall.reset();
+
+//Game State Ready
+    gameState = GameState.ready;
+
+//remove post game widget and add preGame
+    overlays.remove(overlays.activeOverlays.first);
+    overlays.add('PreGame');
+
+    //Resume the game engine
+    resumeEngine();
+  }
+
+  /// For After initialization updates
   @override
   void update(double dt) {
     super.update(dt);
-    if (gameState == GameState.lost) {
+    if (gameState == GameState.lost || gameState == GameState.won) {
       pauseEngine();
+      overlays.add('PostGame');
     }
   }
 }

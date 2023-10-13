@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
 import 'package:brick_breaker/features/game/components/game_brick.dart';
+import 'package:brick_breaker/utils/constants.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
+import 'package:flutter/painting.dart';
 
 class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
   final Vector2 position;
@@ -30,13 +32,33 @@ class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
         remove(child);
       }
     }
+
+    if (children.isEmpty) {
+      gameRef.gameState = GameState.won;
+    }
     super.update(dt);
   }
 
+  late final List<Color> _colors;
   @override
   Future<FutureOr<void>> onLoad() async {
+    _colors = _colorSet(rows);
     await _buildWall();
   }
+
+  Future<void> reset() async {
+    removeAll(children);
+    await _buildWall();
+  }
+
+  static const transparency = 1.0;
+  static const saturation = 0.80;
+  static const lightness = 0.5;
+
+  List<Color> _colorSet(int count) => List<Color>.generate(
+        count,
+        (index) => HSLColor.fromColor(AppColors.brickColorPrimary).toColor(),
+      );
 
   Future<void> _buildWall() async {
     final wallSize = size ??
@@ -59,6 +81,7 @@ class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
       for (var j = 0; j < columns; j++) {
         await add(WallBrick(
           size: brickSize,
+          color: _colors[i],
           brickPosition: brickPosition,
         ));
         brickPosition += Vector2(brickSize.width + gap, 0.0);
