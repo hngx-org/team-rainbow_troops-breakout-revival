@@ -8,10 +8,6 @@ class AuthViewModel extends ChangeNotifier {
   bool _isBusy = false;
   bool get busy => _isBusy;
 
-  BuildContext? context;
-  Color? color;
-  String? message;
-
   void setBusy(bool value) {
     _isBusy = value;
     notifyListeners();
@@ -23,13 +19,14 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   Future signUp({
-    String? email,
-    String? password,
-    Function? onCallBack,
+    required String email,
+    required String password,
+    required String userName,
+    required Function? onCallBack,
   }) async {
     setBusy(true);
     var result = await _authenticationService.signUpWithEmail(
-        email: email!, password: password!);
+        email: email, password: password, userName: userName);
     setBusy(false);
 
     if (result is bool) {

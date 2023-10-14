@@ -88,6 +88,7 @@ class SignupView extends StatelessWidget {
                       authViewModel.signUp(
                           email: _emailController.text,
                           password: _passwordController.text,
+                          userName: _usernameController.text,
                           onCallBack: () {
                             Navigator.push(
                                 context,
