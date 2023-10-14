@@ -1,9 +1,8 @@
-import 'dart:ui';
-
-import 'package:brick_breaker/utils/constants.dart';
+import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:flutter/material.dart';
 
 class Paddle extends BodyComponent with DragCallbacks {
   final Size size;
@@ -23,13 +22,25 @@ class Paddle extends BodyComponent with DragCallbacks {
   }
 
   @override
+  Future<void> onLoad() {
+    final paddleSprite = Sprite(game.images.fromCache('ice_paddle.png'));
+    add(
+      SpriteComponent(
+        sprite: paddleSprite,
+        size: Vector2(size.width, size.height),
+        anchor: Anchor.center,
+      ),
+    );
+    return super.onLoad();
+  }
+
+  @override
   void render(Canvas canvas) {
     final shape = body.fixtures.first.shape as PolygonShape;
 
     final paint = Paint()
-      ..color = AppColors.greenColor
+      ..color = Colors.transparent
       ..style = PaintingStyle.fill;
-
     canvas.drawRect(
         Rect.fromLTRB(
           shape.vertices[0].x,
@@ -126,7 +137,6 @@ class Paddle extends BodyComponent with DragCallbacks {
       ..linearDamping = 10.0;
 
     final paddleBody = world.createBody(bodyDef);
-
     final shape = PolygonShape()
       ..setAsBox(
         size.width / 2.0,

@@ -1,6 +1,6 @@
 import 'package:brick_breaker/features/game/components/arena.dart';
-import 'package:brick_breaker/features/game/components/brick_wall.dart';
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
+import 'package:brick_breaker/features/game/components/game_brick.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/painting.dart';
@@ -26,17 +26,18 @@ class Ball extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
   void beginContact(Object other, Contact contact) {
     if (other is Arena) {
       body.linearVelocity = Vector2(75.0, 75.0);
-    } else if (other is BrickWall) {
-      body.linearVelocity = Vector2(100.0, 100.0);
+    } else if (other is WallBrick) {
+      body.linearVelocity = Vector2(150.0, 150.0);
     }
   }
 
   @override
   void endContact(Object other, Contact contact) {
     if (other is Arena) {
-      body.linearVelocity = Vector2(75.0, 75.0);
-    } else if (other is BrickWall) {
-      body.linearVelocity = Vector2(100.0, 100.0);
+      body.linearVelocity = Vector2(75.0, -75.0);
+    } else if (other is WallBrick) {
+      game.breakoutAudio.playRockBreaking();
+      body.linearVelocity = Vector2(150.0, 150.0);
     }
   }
 
@@ -58,6 +59,20 @@ class Ball extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
     body.setTransform(ballPosition, angle);
     body.angularVelocity = 0.0;
     body.linearVelocity = Vector2.zero();
+  }
+
+  void playLevel(int level) {
+    if (level == 1) {
+      body.linearVelocity = Vector2(50.0, 50.0);
+    } else if (level == 2) {
+      body.linearVelocity = Vector2(120.0, 120.0);
+    } else if (level == 3) {
+      body.linearVelocity = Vector2(140.0, 140.0);
+    } else if (level == 4) {
+      body.linearVelocity = Vector2(150.0, 150.0);
+    } else if (level == 5) {
+      body.linearVelocity = Vector2(170.0, 170.0);
+    }
   }
 
   @override

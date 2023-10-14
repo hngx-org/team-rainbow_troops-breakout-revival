@@ -31,6 +31,7 @@ class MainGameState extends State<MainGamePage> {
             overlayBuilderMap: const {
               'PreGame': OverlayBuilder.preGame,
               'PostGame': OverlayBuilder.postGame,
+              'GameLevel': OverlayBuilder.levelWidget,
             },
           )),
     );
