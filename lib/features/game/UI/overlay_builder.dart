@@ -11,9 +11,15 @@ class OverlayBuilder {
     return const PreGameOverlay();
   }
 
+  static Widget levelWidget(BuildContext context, Forge2dGameWorld gameWorld) {
+    return GameLevelWidget(game: gameWorld);
+  }
+
   static Widget postGame(BuildContext context, Forge2dGameWorld gameWorld) {
-    assert(gameWorld.gameState == GameState.lost ||
-        gameWorld.gameState == GameState.won);
+    // assert(gameWorld.gameState == GameState.lost ||
+    //     gameWorld.gameState == GameState.won);
+
+    debugPrint(gameWorld.gameState.toString());
 
     final message =
         (gameWorld.gameState == GameState.won) ? 'Yay, You won!' : 'Game over';
@@ -70,12 +76,33 @@ Widget _resetGameButton(BuildContext context, Forge2dGameWorld game) {
   return OutlinedButton.icon(
     style: OutlinedButton.styleFrom(
         side: const BorderSide(color: AppColors.brickColorPrimary)),
-    onPressed: () => game.resetGame(),
+    onPressed: () => (game.gameState == GameState.lost)
+        ? game.resetGame()
+        : game.moveToNextLevel(),
     icon: (game.gameState == GameState.lost)
-        ? const Icon(Icons.restart_alt_outlined)
-        : const Icon(Icons.navigate_next),
+        ? const Icon(Icons.replay_outlined)
+        : const Icon(Icons.play_arrow),
     label: (game.gameState == GameState.lost)
         ? const Text('Replay')
         : const Text('Play next level'),
   );
+}
+
+class GameLevelWidget extends StatelessWidget {
+  const GameLevelWidget({super.key, required this.game});
+  final Forge2dGameWorld game;
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: const Alignment(0.95, -1.0),
+      child: Text(
+        'Level: ${game.gameLevel.index + 1}',
+        style: GoogleFonts.russoOne(
+          fontSize: 24,
+          color: AppColors.playerColor,
+          fontWeight: FontWeight.w300,
+        ),
+      ),
+    );
+  }
 }

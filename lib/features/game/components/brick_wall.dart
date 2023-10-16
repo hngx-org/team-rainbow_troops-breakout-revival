@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
@@ -5,6 +6,7 @@ import 'package:brick_breaker/features/game/components/game_brick.dart';
 import 'package:brick_breaker/features/game/constants.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
 class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
@@ -23,7 +25,8 @@ class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
 
   @override
   void update(double dt) {
-    for (final child in children) {
+    // Check for bricks in the wall that have been flagged for removal.
+    for (final child in [...children]) {
       if (child is WallBrick && child.destroyed) {
         for (final fixture in [...child.body.fixtures]) {
           child.body.destroyFixture(fixture);
@@ -35,20 +38,15 @@ class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
 
     if (children.isEmpty) {
       gameRef.gameState = GameState.won;
-      if (gameRef.gameLevel == GameLevel.one) {
-        gameRef.gameLevel = GameLevel.two;
-      } else if (gameRef.gameLevel == GameLevel.two) {
-        gameRef.gameLevel = GameLevel.three;
-      } else if (gameRef.gameLevel == GameLevel.three) {
-        gameRef.gameLevel = GameLevel.four;
-      } else if (gameRef.gameLevel == GameLevel.four) {
-        gameRef.gameLevel = GameLevel.five;
-      }
+      debugPrint('game level before: ${gameRef.gameLevel.name}');
+      gameRef.gameLevel = GameLevel.values[gameRef.gameLevel.index + 1];
+      debugPrint('game level After: ${gameRef.gameLevel.name}');
     }
     super.update(dt);
   }
 
   late final List<Color> _colors;
+  late SpriteAnimation cracker;
   @override
   Future<FutureOr<void>> onLoad() async {
     _colors = _colorSet(rows);
@@ -57,6 +55,12 @@ class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
 
   Future<void> reset() async {
     removeAll(children);
+    await _buildWall();
+  }
+
+  Future<void> resetToNextLevel() async {
+    removeAll(children);
+    debugPrint('Level at brick: ${gameRef.gameLevel.name} $rows');
     await _buildWall();
   }
 
@@ -102,5 +106,20 @@ class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
         brickSize.height + gap,
       );
     }
+  }
+
+  BrickWall copyWith({
+    Vector2? position,
+    Size? size,
+    int? rows,
+    int? columns,
+    double? gap,
+  }) {
+    return BrickWall(
+        position: position ?? this.position,
+        size: size ?? this.size,
+        rows: rows ?? this.rows,
+        columns: columns ?? this.columns,
+        gap: gap ?? this.gap);
   }
 }

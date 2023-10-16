@@ -1,9 +1,10 @@
-import 'dart:ui';
-
 import 'package:brick_breaker/features/game/components/ball.dart';
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
+import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
+import 'package:flame/sprite.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:flutter/material.dart';
 
 class WallBrick extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
   final Size size;
@@ -23,6 +24,21 @@ class WallBrick extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
   }
 
   @override
+  Future<void> onLoad() {
+    final brickSprite = Sprite(game.images.fromCache('brick_seven.png'));
+    add(
+      SpriteComponent(
+        sprite: brickSprite,
+        size: Vector2(size.width, size.height),
+        anchor: Anchor.center,
+      ),
+    );
+    return super.onLoad();
+  }
+
+  late SpriteAnimation cracker;
+
+  @override
   void render(Canvas canvas) {
     if (body.fixtures.isEmpty) {
       return;
@@ -31,7 +47,7 @@ class WallBrick extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
     final rectangle = body.fixtures.first.shape as PolygonShape;
 
     final paint = Paint()
-      ..color = color
+      ..color = Colors.transparent
       ..style = PaintingStyle.fill;
 
     canvas.drawRect(

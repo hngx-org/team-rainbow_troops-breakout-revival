@@ -5,31 +5,45 @@ import 'package:brick_breaker/features/game/components/brick_wall.dart';
 import 'package:brick_breaker/features/game/components/dead_zone.dart.dart';
 import 'package:brick_breaker/features/game/components/paddle.dart';
 import 'package:brick_breaker/features/game/constants.dart';
+import 'package:brick_breaker/features/game/sound/breakout_revival_audio.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:flutter/foundation.dart';
+
+Vector2 getSpritePositionInSheet(
+    int spriteIndex, int columns, double spriteWidth, double spriteHeight) {
+  final row = spriteIndex ~/ columns; // Calculate the row.
+  final col = spriteIndex % columns; // Calculate the column.
+  final x = col * spriteWidth; // Calculate the x-coordinate.
+  final y = row * spriteHeight; // Calculate the y-coordinate.
+
+  return Vector2(x, y);
+}
 
 ///GameLoop where everything loads, initializes and updates.
 class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
   late final Ball _ball;
   late final Arena _arena;
   late final Paddle _paddle;
-  late final BrickWall _brickWall;
+  late final BrickWall brickWall;
   late final DeadZone _deadZone;
 
   ///We have set the gravity in the game to zero and zoom the camera.
   Forge2dGameWorld() : super(gravity: Vector2.zero(), zoom: 20);
 
   GameState gameState = GameState.initializing;
-  GameLevel? gameLevel;
+  GameLevel gameLevel = GameLevel.one;
 
   ///Called when user taps on the screen
   @override
   void onTapDown(TapDownEvent event) {
     if (gameState == GameState.ready) {
       overlays.remove('PreGame');
-      gameLevel = GameLevel.one;
-      _ball.body.linearVelocity = Vector2(50.0, 50.0);
+      if (gameLevel.name.isNotEmpty) {
+        _ball.playLevel(gameLevel.index + 1);
+      }
+      debugPrint(_ball.body.linearVelocity.toString());
       gameState = GameState.running;
     }
     super.onTapDown(event);
@@ -39,13 +53,25 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
   ///loaded inside the game loop.
   @override
   Future<void> onLoad() async {
-    await _initializeGame();
+    await loadSprite('ice_paddle.png');
+    await loadSprite('wood_paddle.png');
+    await loadSprite('brick_ten.png');
+    await loadSprite('brick_nine.png');
+    await loadSprite('brick_seven.png');
+    await loadSprite('brick_five.png');
+    breakoutAudio.loadAssets();
+    _initializeGame();
   }
+
+  ///AudioPlayer instance
+  final breakoutAudio = BreakoutRevivalAudioPlayer();
 
   Future<void> _initializeGame() async {
 
     BackgroundMusic.playBackgroundMusic();
 
+    ///AppBar with level
+    overlays.add('GameLevel');
     //Arena is the game playing ground.
     _arena = Arena();
     await add(_arena);
@@ -60,14 +86,9 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
     //initialization of brick wall
     final brickWallPosition = Vector2(0.0, size.y * 0.075);
 
-    _brickWall = BrickWall(
-      position: brickWallPosition,
-      rows: 2,
-      columns: 5,
-      gap: 0.5,
-    );
-
-    await add(_brickWall);
+    brickWall =
+        BrickWall(position: brickWallPosition, rows: 2, columns: 5, gap: 0.5);
+    await add(brickWall);
 
 //initialization of dead zone if the player goes down this region game is over.
     final deadZonePosition =
@@ -106,18 +127,61 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
     gameState = GameState.initializing;
     _ball.reset();
     _paddle.reset();
-    await _brickWall.reset();
+    await brickWall.reset();
 
-//Game State Ready
+    //remove post game widget and add preGame
+    overlays.remove('PostGame');
+    overlays.add('PreGame');
+
+    //Game State Ready
+    gameState = GameState.ready;
+    //Resume the game engine
+    resumeEngine();
+  }
+
+  Future<void> moveToNextLevel() async {
+    gameState = GameState.initializing;
+    _ball.reset();
+    _paddle.reset();
+    final brickWallPosition = Vector2(0.0, size.y * 0.075);
+    final brickLevel = List.generate(
+        5,
+        (i) => brickWall.copyWith(
+            position: brickWallPosition,
+            rows: (i + 3) ~/ 2,
+            columns: (i + 8) ~/ 2,
+            gap: 1.0));
+    gameState = GameState.initializing;
+    if (gameLevel.name.isNotEmpty) {
+      BrickWall brickWallAtLevel = brickLevel[gameLevel.index];
+      await add(brickWallAtLevel);
+    }
+    debugPrint('gameLevel: $gameLevel ');
+    //resetting of brick wall to next level
+    await brickWall.resetToNextLevel();
+    //Game State Ready
     gameState = GameState.ready;
 
 //remove post game widget and add preGame
-    overlays.remove(overlays.activeOverlays.first);
+    overlays.remove('PostGame');
     overlays.add('PreGame');
 
     //Resume the game engine
     resumeEngine();
   }
+
+  // ///To set the level of the game
+  // Future<void> setBallLevel() async {
+  //   if (gameLevel == GameLevel.two) {
+  //     _ball.playLevel(2);
+  //   } else if (gameLevel == GameLevel.three) {
+  //     _ball.playLevel(3);
+  //   } else if (gameLevel == GameLevel.four) {
+  //     _ball.playLevel(4);
+  //   } else {
+  //     _ball.playLevel(5);
+  //   }
+  // }
 
   /// For After initialization updates
   @override
