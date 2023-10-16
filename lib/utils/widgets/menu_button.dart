@@ -15,16 +15,17 @@ class MenuButton extends StatelessWidget {
         height: 64,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Colors.black, Colors.white],
+            colors: [Colors.black.withOpacity(0.35), Colors.white],
           ),
         ),
         child: Center(
           child: Text(
             viewModel.title,
             style: const TextStyle(
+              color: Color(0xFFB2B6C6),
               fontSize: 24,
               fontWeight: FontWeight.w400,
             ),
