@@ -18,14 +18,28 @@ class MenuButton extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Colors.black.withOpacity(0.35), Colors.white],
+            colors: [
+              const Color(0xFFB2B6C6).withOpacity(1.0),
+              const Color(0xFFEBECF0).withOpacity(1.0),
+            ],
           ),
+          border: Border.all(
+            color: Colors.black.withOpacity(0.35),
+            width: 1.0,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.35),
+              blurRadius: 5.0,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
         child: Center(
           child: Text(
             viewModel.title,
             style: const TextStyle(
-              color: Color(0xFFB2B6C6),
+              color: Colors.white54,
               fontSize: 24,
               fontWeight: FontWeight.w400,
             ),
