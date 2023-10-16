@@ -1,4 +1,5 @@
 import 'package:brick_breaker/features/game/components/arena.dart';
+import 'package:brick_breaker/features/game/components/background_music.dart';
 import 'package:brick_breaker/features/game/components/ball.dart';
 import 'package:brick_breaker/features/game/components/brick_wall.dart';
 import 'package:brick_breaker/features/game/components/dead_zone.dart.dart';
@@ -66,6 +67,9 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
   final breakoutAudio = BreakoutRevivalAudioPlayer();
 
   Future<void> _initializeGame() async {
+
+    BackgroundMusic.playBackgroundMusic();
+
     ///AppBar with level
     overlays.add('GameLevel');
     //Arena is the game playing ground.
