@@ -1,6 +1,4 @@
-import 'package:brick_breaker/features/authentication/services/global.dart';
-import 'package:brick_breaker/features/authentication/viewmodels/authentication_view_model.dart';
-import 'package:brick_breaker/features/authentication/views/signup_view.dart';
+import 'package:brick_breaker/features/game/views/main_game_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,15 +14,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => AuthViewModel())],
-      child: MaterialApp(
-        theme: ThemeData(
-          useMaterial3: true,
-        ),
-        scaffoldMessengerKey: snackBarKey,
-        home: SignupView(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
       ),
+      home: const MainGamePage(),
     );
   }
 }
