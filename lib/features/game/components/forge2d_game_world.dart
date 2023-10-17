@@ -5,20 +5,13 @@ import 'package:brick_breaker/features/game/components/dead_zone.dart.dart';
 import 'package:brick_breaker/features/game/components/paddle.dart';
 import 'package:brick_breaker/features/game/constants.dart';
 import 'package:brick_breaker/features/game/sound/breakout_revival_audio.dart';
+import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
+import 'package:flame/sprite.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
-import 'package:flutter/foundation.dart';
-
-Vector2 getSpritePositionInSheet(
-    int spriteIndex, int columns, double spriteWidth, double spriteHeight) {
-  final row = spriteIndex ~/ columns; // Calculate the row.
-  final col = spriteIndex % columns; // Calculate the column.
-  final x = col * spriteWidth; // Calculate the x-coordinate.
-  final y = row * spriteHeight; // Calculate the y-coordinate.
-
-  return Vector2(x, y);
-}
+import 'package:flutter/material.dart';
 
 ///GameLoop where everything loads, initializes and updates.
 class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
@@ -27,6 +20,7 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
   late final Paddle _paddle;
   late final BrickWall brickWall;
   late final DeadZone _deadZone;
+  late SpriteAnimation cracker;
 
   ///We have set the gravity in the game to zero and zoom the camera.
   Forge2dGameWorld() : super(gravity: Vector2.zero(), zoom: 20);
@@ -39,10 +33,12 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
   void onTapDown(TapDownEvent event) {
     if (gameState == GameState.ready) {
       overlays.remove('PreGame');
+      breakoutAudio.playBackgroundMusic();
       if (gameLevel.name.isNotEmpty) {
         _ball.playLevel(gameLevel.index + 1);
       }
-      debugPrint(_ball.body.linearVelocity.toString());
+      debugPrint(
+          '${_ball.body.linearVelocity.toString()} ${gameLevel.index + 1}');
       gameState = GameState.running;
     }
     super.onTapDown(event);
@@ -52,12 +48,55 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
   ///loaded inside the game loop.
   @override
   Future<void> onLoad() async {
+    FlameAudio.bgm.initialize();
     await loadSprite('ice_paddle.png');
+    await loadSprite('brick_explode.png');
     await loadSprite('wood_paddle.png');
     await loadSprite('brick_ten.png');
     await loadSprite('brick_nine.png');
     await loadSprite('brick_seven.png');
     await loadSprite('brick_five.png');
+    final sprites = SpriteSheet(
+        image: images.fromCache('brick_explode.png'),
+        srcSize: Vector2.all(256));
+
+    cracker = SpriteAnimation.fromFrameData(
+      images.fromCache('brick_explode.png'),
+      SpriteAnimationData([
+        sprites.createFrameDataFromId(0, stepTime: 0.005),
+        sprites.createFrameDataFromId(1, stepTime: 0.005),
+        sprites.createFrameDataFromId(2, stepTime: 0.01),
+        sprites.createFrameDataFromId(3, stepTime: 0.01),
+        sprites.createFrameDataFromId(4, stepTime: 0.01),
+        sprites.createFrameDataFromId(5, stepTime: 0.01),
+        sprites.createFrameDataFromId(6, stepTime: 0.01),
+        // sprites.createFrameDataFromId(7, stepTime: 0.01),
+        // sprites.createFrameDataFromId(8, stepTime: 0.01),
+        // sprites.createFrameDataFromId(9, stepTime: 0.01),
+        // sprites.createFrameDataFromId(10, stepTime: 0.01),
+        // sprites.createFrameDataFromId(11, stepTime: 0.01),
+        // sprites.createFrameDataFromId(12, stepTime: 0.01),
+        // sprites.createFrameDataFromId(13, stepTime: 0.01),
+        // sprites.createFrameDataFromId(14, stepTime: 0.01),
+        // sprites.createFrameDataFromId(15, stepTime: 0.01),
+        // sprites.createFrameDataFromId(16, stepTime: 0.01),
+        // sprites.createFrameDataFromId(17, stepTime: 0.01),
+        // sprites.createFrameDataFromId(18, stepTime: 0.01),
+        // sprites.createFrameDataFromId(19, stepTime: 0.01),
+        // sprites.createFrameDataFromId(20, stepTime: 0.01),
+        sprites.createFrameDataFromId(21, stepTime: 0.01),
+        sprites.createFrameDataFromId(22, stepTime: 0.01),
+        sprites.createFrameDataFromId(23, stepTime: 0.01),
+        sprites.createFrameDataFromId(24, stepTime: 0.01),
+        sprites.createFrameDataFromId(25, stepTime: 0.01),
+        sprites.createFrameDataFromId(26, stepTime: 0.01),
+        sprites.createFrameDataFromId(27, stepTime: 0.01),
+        sprites.createFrameDataFromId(28, stepTime: 0.01),
+        sprites.createFrameDataFromId(29, stepTime: 0.01),
+        sprites.createFrameDataFromId(30, stepTime: 0.01),
+        sprites.createFrameDataFromId(31, stepTime: 0.01),
+      ], loop: false),
+    );
     breakoutAudio.loadAssets();
     _initializeGame();
   }
@@ -83,7 +122,7 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
     final brickWallPosition = Vector2(0.0, size.y * 0.075);
 
     brickWall =
-        BrickWall(position: brickWallPosition, rows: 2, columns: 5, gap: 0.5);
+        BrickWall(position: brickWallPosition, rows: 1, columns: 1, gap: 0.5);
     await add(brickWall);
 
 //initialization of dead zone if the player goes down this region game is over.
@@ -137,24 +176,31 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
 
   Future<void> moveToNextLevel() async {
     gameState = GameState.initializing;
+
     _ball.reset();
     _paddle.reset();
+
     final brickWallPosition = Vector2(0.0, size.y * 0.075);
+
     final brickLevel = List.generate(
         5,
-        (i) => brickWall.copyWith(
-            position: brickWallPosition,
-            rows: (i + 3) ~/ 2,
-            columns: (i + 8) ~/ 2,
-            gap: 1.0));
-    gameState = GameState.initializing;
+        (i) => BrickWall(
+            position: brickWallPosition, rows: 1, columns: 1, gap: 1.0));
+
     if (gameLevel.name.isNotEmpty) {
       BrickWall brickWallAtLevel = brickLevel[gameLevel.index];
+      debugPrint(
+          '${gameLevel.index.toString()} ${gameLevel.name} ${gameState.toString()} ${brickWallAtLevel.children.toString()}');
       await add(brickWallAtLevel);
+      debugPrint(
+          '${gameLevel.index.toString()} ${gameLevel.name} ${gameState.toString()} ${brickWallAtLevel.children.toString()}');
     }
+
     debugPrint('gameLevel: $gameLevel ');
-    //resetting of brick wall to next level
+
+    // resetting of brick wall to next level
     await brickWall.resetToNextLevel();
+
     //Game State Ready
     gameState = GameState.ready;
 
@@ -166,24 +212,12 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
     resumeEngine();
   }
 
-  // ///To set the level of the game
-  // Future<void> setBallLevel() async {
-  //   if (gameLevel == GameLevel.two) {
-  //     _ball.playLevel(2);
-  //   } else if (gameLevel == GameLevel.three) {
-  //     _ball.playLevel(3);
-  //   } else if (gameLevel == GameLevel.four) {
-  //     _ball.playLevel(4);
-  //   } else {
-  //     _ball.playLevel(5);
-  //   }
-  // }
-
   /// For After initialization updates
   @override
   void update(double dt) {
     super.update(dt);
     if (gameState == GameState.lost || gameState == GameState.won) {
+      FlameAudio.bgm.pause();
       pauseEngine();
       overlays.add('PostGame');
     }

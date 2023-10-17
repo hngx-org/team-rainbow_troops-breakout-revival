@@ -2,7 +2,6 @@ import 'package:brick_breaker/features/game/components/ball.dart';
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
-import 'package:flame/sprite.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 
@@ -17,13 +16,6 @@ class WallBrick extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
   var destroyed = false;
 
   @override
-  void beginContact(Object other, Contact contact) {
-    if (other is Ball) {
-      destroyed = true;
-    }
-  }
-
-  @override
   Future<void> onLoad() {
     final brickSprite = Sprite(game.images.fromCache('brick_seven.png'));
     add(
@@ -34,6 +26,21 @@ class WallBrick extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
       ),
     );
     return super.onLoad();
+  }
+
+  @override
+  void beginContact(Object other, Contact contact) {
+    if (other is Ball) {
+      destroyed = true;
+      game.add(
+        SpriteAnimationComponent(
+            animation: game.cracker.clone(),
+            anchor: Anchor.center,
+            position: body.position,
+            size: Vector2(size.width * 4.0, size.height * 4.0),
+            removeOnFinish: true),
+      );
+    }
   }
 
   late SpriteAnimation cracker;

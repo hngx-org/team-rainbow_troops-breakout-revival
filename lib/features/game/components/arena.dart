@@ -40,7 +40,7 @@ class Arena extends BodyComponent<Forge2dGameWorld> {
       arenaBody.createFixture(FixtureDef(chain.childEdge(index))
         ..density = 2000.0
         ..friction = 0.0
-        ..restitution = 0.4);
+        ..restitution = 0.2);
     }
 
     return arenaBody;

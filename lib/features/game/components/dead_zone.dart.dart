@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:brick_breaker/features/game/components/ball.dart';
 import 'package:brick_breaker/features/game/constants.dart';
 import 'package:flame/extensions.dart';
