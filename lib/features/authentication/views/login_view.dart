@@ -73,7 +73,7 @@ class LoginView extends StatelessWidget {
                   onPress: () {
                     if (_emailController.text.isNotEmpty &&
                         _passwordController.text.isNotEmpty) {
-                      authViewModel.login(
+                      authViewModel.logIn(
                           email: _emailController.text,
                           password: _passwordController.text,
                           onCallBack: () {

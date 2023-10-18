@@ -1,6 +1,7 @@
 import 'package:brick_breaker/features/authentication/models/user_model.dart';
-import 'package:brick_breaker/features/authentication/services/firestore_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import 'firestore_service.dart';
 
 class AuthenticationService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -49,5 +50,11 @@ class AuthenticationService {
     } on FirebaseAuthException catch (e) {
       return e.message;
     }
+  }
+
+  Future<bool> isUserLoggedIn() async{
+    User? user =  _firebaseAuth.currentUser;
+    await _populateCurrentUser(user!);
+    return user != null;
   }
 }
