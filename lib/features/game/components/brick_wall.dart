@@ -7,6 +7,7 @@ import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
+import 'package:brick_breaker/utils/constants.dart';
 
 class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
   final Vector2 position;
@@ -109,7 +110,9 @@ class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
       for (var j = 0; j < columns; j++) {
         await add(WallBrick(
           size: brickSize,
-          color: _colors[i],
+          color: (j ~/ 2 == 0)
+              ? AppColors.brickColorPrimary
+              : AppColors.brickColorSecondary,
           brickPosition: brickPosition,
         ));
         final randomColMulti = randomNumCols.nextInt(1) + 1.3;
