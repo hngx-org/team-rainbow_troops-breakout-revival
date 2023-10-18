@@ -18,13 +18,13 @@ class WallBrick extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
   @override
   Future<void> onLoad() {
     final brickSprite = Sprite(game.images.fromCache('brick_seven.png'));
-    add(
-      SpriteComponent(
-        sprite: brickSprite,
-        size: Vector2(size.width, size.height),
-        anchor: Anchor.center,
-      ),
-    );
+    // add(
+    //   SpriteComponent(
+    //     sprite: brickSprite,
+    //     size: Vector2(size.width, size.height),
+    //     anchor: Anchor.center,
+    //   ),
+    // );
     return super.onLoad();
   }
 
@@ -55,7 +55,7 @@ class WallBrick extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
     final rectangle = body.fixtures.first.shape as PolygonShape;
 
     final paint = Paint()
-      ..color = Colors.transparent
+      ..color = color
       ..style = PaintingStyle.fill;
 
     canvas.drawRect(
