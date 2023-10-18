@@ -35,6 +35,7 @@ dependencies:
   flame_forge2d: ^0.15.1
   flutter:
     sdk: flutter
+  flutter_svg: ^2.0.7
   google_fonts: ^6.1.0
 
 dev_dependencies:
