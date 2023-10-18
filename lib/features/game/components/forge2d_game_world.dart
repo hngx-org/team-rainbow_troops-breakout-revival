@@ -5,6 +5,7 @@ import 'package:brick_breaker/features/game/components/dead_zone.dart.dart';
 import 'package:brick_breaker/features/game/components/paddle.dart';
 import 'package:brick_breaker/features/game/constants.dart';
 import 'package:brick_breaker/features/game/sound/breakout_revival_audio.dart';
+import 'package:brick_breaker/utils/constants.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
@@ -18,7 +19,8 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
   late final Ball _ball;
   late final Arena _arena;
   late final Paddle _paddle;
-  late final BrickWall brickWall;
+  BrickWall? brickWall;
+  BrickWall? brickWallNextLevel;
   late final DeadZone _deadZone;
   late SpriteAnimation cracker;
 
@@ -27,6 +29,9 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
 
   GameState gameState = GameState.initializing;
   GameLevel gameLevel = GameLevel.one;
+
+  @override
+  Color backgroundColor() => AppColors.backgroundColor;
 
   ///Called when user taps on the screen
   @override
@@ -122,8 +127,8 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
     final brickWallPosition = Vector2(0.0, size.y * 0.075);
 
     brickWall =
-        BrickWall(position: brickWallPosition, rows: 1, columns: 1, gap: 0.5);
-    await add(brickWall);
+        BrickWall(position: brickWallPosition, rows: 1, columns: 3, gap: 0.5);
+    await add(brickWall!);
 
 //initialization of dead zone if the player goes down this region game is over.
     final deadZonePosition =
@@ -162,7 +167,11 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
     gameState = GameState.initializing;
     _ball.reset();
     _paddle.reset();
-    await brickWall.reset();
+    if (brickWallNextLevel != null) {
+      await brickWallNextLevel?.reset();
+    } else {
+      await brickWall?.reset();
+    }
 
     //remove post game widget and add preGame
     overlays.remove('PostGame');
@@ -180,31 +189,44 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
     _ball.reset();
     _paddle.reset();
 
+//Removing the old brickWall before adding new one.
+    if (brickWall != null) {
+      remove(brickWall!);
+    }
+
+    ///initializing new instance of the brick wall
     final brickWallPosition = Vector2(0.0, size.y * 0.075);
 
     final brickLevel = List.generate(
         5,
         (i) => BrickWall(
-            position: brickWallPosition, rows: 1, columns: 1, gap: 1.0));
+            position: brickWallPosition,
+            rows: i + 2,
+            columns: i + 2,
+            gap: 1.0));
 
     if (gameLevel.name.isNotEmpty) {
-      BrickWall brickWallAtLevel = brickLevel[gameLevel.index];
+      brickWallNextLevel = brickLevel[gameLevel.index];
       debugPrint(
-          '${gameLevel.index.toString()} ${gameLevel.name} ${gameState.toString()} ${brickWallAtLevel.children.toString()}');
-      await add(brickWallAtLevel);
+          '${gameLevel.index.toString()} ${gameLevel.name} ${gameState.toString()} ${brickWallNextLevel?.children.toString()}');
+      await add(brickWallNextLevel!);
       debugPrint(
-          '${gameLevel.index.toString()} ${gameLevel.name} ${gameState.toString()} ${brickWallAtLevel.children.toString()}');
+          '${gameLevel.index.toString()} ${gameLevel.name} ${gameState.toString()} ${brickWallNextLevel?.children.toString()}');
+    }
+
+    // resetting of brick wall to next level
+    if (brickWall != null) {
+      await brickWall?.reset();
+    } else {
+      await brickWallNextLevel?.reset();
     }
 
     debugPrint('gameLevel: $gameLevel ');
 
-    // resetting of brick wall to next level
-    await brickWall.resetToNextLevel();
-
     //Game State Ready
     gameState = GameState.ready;
 
-//remove post game widget and add preGame
+    //remove post game widget and add preGame
     overlays.remove('PostGame');
     overlays.add('PreGame');
 
@@ -212,14 +234,29 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
     resumeEngine();
   }
 
+  void pause() {
+    if (gameState == GameState.running) {
+      gameState = GameState.paused;
+      debugPrint(gameState.toString());
+    } else if (gameState == GameState.paused) {
+      gameState = GameState.running;
+      resumeEngine();
+      debugPrint(gameState.toString());
+    }
+  }
+
   /// For After initialization updates
   @override
-  void update(double dt) {
+  void update(double dt) async {
     super.update(dt);
     if (gameState == GameState.lost || gameState == GameState.won) {
-      FlameAudio.bgm.pause();
+      await FlameAudio.bgm.pause();
       pauseEngine();
       overlays.add('PostGame');
+    }
+    if (gameState == GameState.paused) {
+      await FlameAudio.bgm.pause();
+      pauseEngine();
     }
   }
 }

@@ -16,8 +16,8 @@ class OverlayBuilder {
   }
 
   static Widget postGame(BuildContext context, Forge2dGameWorld gameWorld) {
-    // assert(gameWorld.gameState == GameState.lost ||
-    //     gameWorld.gameState == GameState.won);
+    assert(gameWorld.gameState == GameState.lost ||
+        gameWorld.gameState == GameState.won);
 
     debugPrint(gameWorld.gameState.toString());
 
@@ -91,17 +91,44 @@ Widget _resetGameButton(BuildContext context, Forge2dGameWorld game) {
 class GameLevelWidget extends StatelessWidget {
   const GameLevelWidget({super.key, required this.game});
   final Forge2dGameWorld game;
+
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: const Alignment(0.95, -1.0),
-      child: Text(
-        'Level: ${game.gameLevel.index + 1}',
-        style: GoogleFonts.russoOne(
-          fontSize: 24,
-          color: AppColors.playerColor,
-          fontWeight: FontWeight.w300,
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Align(
+            alignment: const Alignment(0.0, -0.95),
+            child: Text(
+              'Level: ${game.gameLevel.index + 1}',
+              style: GoogleFonts.mooLahLah(
+                fontSize: 28,
+                color: AppColors.brickColorSecondary,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ),
+          Align(
+            alignment: const Alignment(0.0, -0.97),
+            child: IconButton(
+                onPressed: game.pause,
+                icon: /* (game.gameState == GameState.running)
+                    ? const ImageIcon(
+                        AssetImage('assets/images/pause.png'),
+                        size: 35,
+                        color: AppColors.brickColorSecondary,
+                      )
+                    :  */
+                    const ImageIcon(
+                  AssetImage('assets/images/play.png'),
+                  size: 35,
+                  color: AppColors.brickColorSecondary,
+                )),
+          )
+        ],
       ),
     );
   }

@@ -30,7 +30,7 @@ class WallBrick extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
 
   @override
   void beginContact(Object other, Contact contact) {
-    if (other is Ball) {
+    if (other is Ball && !destroyed) {
       destroyed = true;
       game.add(
         SpriteAnimationComponent(
@@ -40,6 +40,7 @@ class WallBrick extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
             size: Vector2(size.width * 4.0, size.height * 4.0),
             removeOnFinish: true),
       );
+      debugPrint('$destroyed ${body.isActive} ${body.toString()}');
     }
   }
 

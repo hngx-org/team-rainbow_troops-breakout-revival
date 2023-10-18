@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
 import 'package:brick_breaker/features/game/components/game_brick.dart';
 import 'package:brick_breaker/features/game/constants.dart';
@@ -30,19 +29,22 @@ class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
       if (child is WallBrick && child.destroyed) {
         for (final fixture in [...child.body.fixtures]) {
           child.body.destroyFixture(fixture);
+          debugPrint(fixture.body.toString());
         }
         gameRef.world.destroyBody(child.body);
         remove(child);
+        debugPrint(child.body.toString());
       }
     }
 
-    if (!gameRef.brickWall.hasChildren &&
-        gameRef.gameState == GameState.running) {
-      gameRef.gameState = GameState.won;
-      debugPrint('game level before: ${gameRef.gameLevel.name}');
-      gameRef.gameLevel = GameLevel.values[gameRef.gameLevel.index + 1];
-      debugPrint('game level After: ${gameRef.gameLevel.name}');
-    }
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (children.isEmpty && gameRef.gameState == GameState.running) {
+        gameRef.gameState = GameState.won;
+        debugPrint('game level before: ${gameRef.gameLevel.name}');
+        gameRef.gameLevel = GameLevel.values[gameRef.gameLevel.index + 1];
+        debugPrint('game level After: ${gameRef.gameLevel.name}');
+      }
+    });
     super.update(dt);
   }
 
@@ -57,12 +59,7 @@ class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
   Future<void> reset() async {
     removeAll(children);
     await _buildWall();
-  }
-
-  Future<void> resetToNextLevel() async {
-    // removeAll(children);
     debugPrint('Level at brick: ${gameRef.gameLevel.name} $rows');
-    await _buildWall();
   }
 
   static const transparency = 1.0;
