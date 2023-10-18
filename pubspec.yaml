@@ -29,6 +29,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   cupertino_icons: ^1.0.2
+  device_preview: ^1.1.0
   flame: ^1.10.0
   flame_audio: ^2.1.2
   flame_forge2d: ^0.15.1

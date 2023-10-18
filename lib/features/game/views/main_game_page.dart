@@ -21,11 +21,7 @@ class MainGameState extends State<MainGamePage> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Container(
-          color: Colors.black87,
-          margin: const EdgeInsets.symmetric(
-            horizontal: 30,
-            vertical: 40,
-          ),
+          color: Colors.transparent,
           child: GameWidget(
             game: forge2dGameWorld,
             overlayBuilderMap: const {

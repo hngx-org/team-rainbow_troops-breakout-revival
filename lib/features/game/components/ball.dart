@@ -1,11 +1,14 @@
 import 'package:brick_breaker/features/game/components/arena.dart';
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
 import 'package:brick_breaker/features/game/components/game_brick.dart';
+import 'package:brick_breaker/features/game/constants.dart';
+import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/painting.dart';
 
-class Ball extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
+class Ball extends BodyComponent<Forge2dGameWorld>
+    with HasGameRef<Forge2dGameWorld>, ContactCallbacks {
   final Vector2 ballPosition;
   final double radius;
 
@@ -22,22 +25,67 @@ class Ball extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
     radius: 0.95,
   );
 
-  @override
-  void beginContact(Object other, Contact contact) {
-    if (other is Arena) {
-      body.linearVelocity = Vector2(75.0, 75.0);
-    } else if (other is WallBrick) {
-      body.linearVelocity = Vector2(150.0, 150.0);
-    }
-  }
+  // @override
+  // void beginContact(Object other, Contact contact) {
+  //   if (other is Arena) {
+  //     body.linearVelocity = Vector2(75.0, 75.0);
+  //   } else if (other is WallBrick) {
+  //     body.linearVelocity = Vector2(150.0, 150.0);
+  //   }
+  // }
 
   @override
-  void endContact(Object other, Contact contact) {
-    if (other is Arena) {
-      body.linearVelocity = Vector2(75.0, -75.0);
-    } else if (other is WallBrick) {
-      game.breakoutAudio.playRockBreaking();
-      body.linearVelocity = Vector2(150.0, 150.0);
+  void beginContact(Object other, Contact contact) {
+    switch (gameRef.gameLevel) {
+      case GameLevel.one:
+        if (other is Arena) {
+          body.linearVelocity = Vector2(120.0, -120.0);
+        } else if (other is WallBrick) {
+          body.linearVelocity = Vector2(150.0, 150.0);
+          game.breakoutAudio.playRockBreaking();
+          body.linearVelocity = Vector2(150.0, 150.0);
+        }
+        break;
+      case GameLevel.two:
+        if (other is Arena) {
+          body.linearVelocity = Vector2(150.0, -150.0);
+        } else if (other is WallBrick) {
+          game.breakoutAudio.playRockBreaking();
+          body.linearVelocity = Vector2(200.0, 200.0);
+        }
+        break;
+      case GameLevel.three:
+        if (other is Arena) {
+          body.linearVelocity = Vector2(180.0, -180.0);
+        } else if (other is WallBrick) {
+          game.breakoutAudio.playRockBreaking();
+          body.linearVelocity = Vector2(250.0, 250.0);
+        }
+        break;
+      case GameLevel.four:
+        if (other is Arena) {
+          body.linearVelocity = Vector2(210.0, -210.0);
+        } else if (other is WallBrick) {
+          game.breakoutAudio.playRockBreaking();
+          body.linearVelocity = Vector2(300.0, 300.0);
+        }
+        break;
+      case GameLevel.five:
+        if (other is Arena) {
+          body.linearVelocity = Vector2(240.0, -240.0);
+        } else if (other is WallBrick) {
+          game.breakoutAudio.playRockBreaking();
+          body.linearVelocity = Vector2(350.0, 350.0);
+        }
+        break;
+      default:
+        if (other is Arena) {
+          body.linearVelocity = Vector2(120.0, -120.0);
+        } else if (other is WallBrick) {
+          body.linearVelocity = Vector2(150.0, 150.0);
+          game.breakoutAudio.playRockBreaking();
+          body.linearVelocity = Vector2(150.0, 150.0);
+        }
     }
   }
 
@@ -63,15 +111,15 @@ class Ball extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
 
   void playLevel(int level) {
     if (level == 1) {
-      body.linearVelocity = Vector2(50.0, 50.0);
-    } else if (level == 2) {
       body.linearVelocity = Vector2(120.0, 120.0);
+    } else if (level == 2) {
+      body.linearVelocity = Vector2(180.0, 180.0);
     } else if (level == 3) {
-      body.linearVelocity = Vector2(140.0, 140.0);
+      body.linearVelocity = Vector2(220.0, 220.0);
     } else if (level == 4) {
-      body.linearVelocity = Vector2(150.0, 150.0);
+      body.linearVelocity = Vector2(250.0, 250.0);
     } else if (level == 5) {
-      body.linearVelocity = Vector2(170.0, 170.0);
+      body.linearVelocity = Vector2(300.0, 300.0);
     }
   }
 
