@@ -4,6 +4,7 @@ import 'package:brick_breaker/features/services/locator_service.dart';
 import 'package:brick_breaker/features/services/navigation_service.dart';
 import 'package:brick_breaker/routes/route_names.dart';
 import 'package:brick_breaker/utils/dialog/dialog_manager.dart';
+// import 'package:brick_breaker/utils/widgets/modal.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         onGenerateRoute: router.Routes.generateRoute,
         initialRoute: splash,
       ),
+      // home: const Modal()
     );
   }
 }

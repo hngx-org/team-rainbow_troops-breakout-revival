@@ -1,3 +1,4 @@
+import 'package:brick_breaker/utils/constants.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
@@ -24,13 +25,13 @@ class Paddle extends BodyComponent with DragCallbacks {
   @override
   Future<void> onLoad() {
     final paddleSprite = Sprite(game.images.fromCache('ice_paddle.png'));
-    add(
-      SpriteComponent(
-        sprite: paddleSprite,
-        size: Vector2(size.width, size.height),
-        anchor: Anchor.center,
-      ),
-    );
+    // add(
+    //   SpriteComponent(
+    //     sprite: paddleSprite,
+    //     size: Vector2(size.width, size.height),
+    //     anchor: Anchor.center,
+    //   ),
+    // );
     return super.onLoad();
   }
 
@@ -39,7 +40,7 @@ class Paddle extends BodyComponent with DragCallbacks {
     final shape = body.fixtures.first.shape as PolygonShape;
 
     final paint = Paint()
-      ..color = Colors.transparent
+      ..color = AppColors.greenColor
       ..style = PaintingStyle.fill;
     canvas.drawRect(
         Rect.fromLTRB(
