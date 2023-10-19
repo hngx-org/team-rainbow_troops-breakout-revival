@@ -30,6 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
     SplashViewModel splashViewModel = context.watch<SplashViewModel>();
 
     return Scaffold(
+      backgroundColor: const Color(0xff303B52),
       body: Container(
         alignment: Alignment.topCenter,
         child: Column(

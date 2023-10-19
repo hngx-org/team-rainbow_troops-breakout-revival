@@ -1,4 +1,3 @@
-import 'package:brick_breaker/random_screen.dart';
 import 'package:brick_breaker/utils/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:brick_breaker/utils/widgets/custom_input_field.dart';
@@ -75,14 +74,7 @@ class LoginView extends StatelessWidget {
                         _passwordController.text.isNotEmpty) {
                       authViewModel.logIn(
                           email: _emailController.text,
-                          password: _passwordController.text,
-                          onCallBack: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const RandomScreen()));
-                          });
+                          password: _passwordController.text);
                     }
                   },
                   buttonchild: 'Login',
@@ -93,7 +85,9 @@ class LoginView extends StatelessWidget {
                   height: height * 0.03,
                 ),
                 CustomText(
-                  onpressed: () {},
+                  onpressed: () {
+                    authViewModel.navigateToSignup();
+                  },
                   text: 'Forgot your username or password?',
                   color: Colors.black,
                 )

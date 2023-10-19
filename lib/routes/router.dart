@@ -13,8 +13,6 @@ class Routes {
       case splash:
         page = SplashScreen();
         break;
-      // case splash:
-      //   return MaterialPageRoute(builder: (_) => SplashScreen());
       case login:
         page = LoginView();
         break;

@@ -1,4 +1,5 @@
 import 'package:brick_breaker/features/authentication/viewmodels/authentication_view_model.dart';
+import 'package:brick_breaker/features/game/views/main_game_page.dart';
 import 'package:brick_breaker/features/onboarding/splash_view_model.dart';
 import 'package:brick_breaker/features/services/locator_service.dart';
 import 'package:brick_breaker/features/services/navigation_service.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
-        ChangeNotifierProvider(create: (_) => SplashViewModel())
+        ChangeNotifierProvider(create: (_) => SplashViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

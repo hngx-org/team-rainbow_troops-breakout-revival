@@ -72,4 +72,12 @@ class AuthViewModel extends ChangeNotifier {
       );
     }
   }
+
+  void navigateToSignup() {
+    _navigationService.navigateTo(signup);
+  }
+
+  void navigateToLogin() {
+    _navigationService.navigateTo(login);
+  }
 }

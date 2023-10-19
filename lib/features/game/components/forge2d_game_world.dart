@@ -111,7 +111,6 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
   final breakoutAudio = BreakoutRevivalAudioPlayer();
 
   Future<void> _initializeGame() async {
-
     BackgroundMusic.playBackgroundMusic();
 
     ///AppBar with level

@@ -110,8 +110,7 @@ class SignupView extends StatelessWidget {
                 ),
                 CustomText(
                   onpressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LoginView()));
+                    authViewModel.navigateToLogin();
                   },
                   text: 'Log in',
                   color: const Color(0xff18A4DD),
