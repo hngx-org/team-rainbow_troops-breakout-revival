@@ -1,4 +1,5 @@
 import 'package:brick_breaker/features/game/views/main_game_page.dart';
+// import 'package:brick_breaker/utils/widgets/modal.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const MainGamePage(),
+      // home: const Modal()
     );
   }
 }
