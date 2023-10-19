@@ -98,8 +98,8 @@ Widget _resetGameButton(BuildContext context, Forge2dGameWorld game) {
         ? SvgPicture.asset('assets/images/Replay.svg', width: 24, height: 24, color: Colors.purple,)
         : SvgPicture.asset('assets/images/play_arrow.svg', width: 24, height: 24, color: Colors.purple,),
     label: (game.gameState == GameState.lost)
-        ? const Text('Replay',)
-        : const Text('Play next level'),
+        ? const Text('Replay', style: TextStyle(color: Colors.purple),)
+        : const Text('Play next level', style: TextStyle(color: Colors.purple),),
   );
 }
 
