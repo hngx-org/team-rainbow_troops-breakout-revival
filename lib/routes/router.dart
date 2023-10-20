@@ -12,7 +12,7 @@ class Routes {
     Widget page;
     switch (settings.name) {
       case splash:
-        page = SplashScreen();
+        page = const SplashScreen();
         break;
       case login:
         page = LoginView();
