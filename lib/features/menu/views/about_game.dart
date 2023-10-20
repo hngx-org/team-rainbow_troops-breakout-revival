@@ -10,17 +10,17 @@ class GameInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    NavigationService _navigationService = locator<NavigationService>();
+    NavigationService navigationService = locator<NavigationService>();
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color(0xFF2F3B52),
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          title: Text(
+          title: const Text(
             'About Game',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          leading: Icon(Icons.arrow_back_ios),
+          leading: const Icon(Icons.arrow_back_ios),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
@@ -28,7 +28,7 @@ class GameInfo extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
             child: Column(
               children: [
-                Text(
+                const Text(
                   'Embark on an exhilarating journey '
                   'through the captivating world '
                   'of Breakout, where fast-paced '
@@ -53,16 +53,16 @@ class GameInfo extends StatelessWidget {
                   // '\nAdjust the speed and size of ball using the settings'
                   '\n',
                   // '\nSelect the game level using the Game levels button',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white24),
                 ),
                 OutlinedButton(
                     style: OutlinedButton.styleFrom(
                         side: const BorderSide(
                             color: AppColors.brickColorPrimary)),
                     onPressed: () {
-                      _navigationService.navigateTo(menu);
+                      navigationService.navigateTo(menu);
                     },
-                    child: Text(
+                    child: const Text(
                       'Menu',
                       style: TextStyle(color: AppColors.brickColorPrimary),
                     ))
