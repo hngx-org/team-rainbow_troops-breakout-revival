@@ -1,15 +1,15 @@
 import 'package:brick_breaker/features/authentication/viewmodels/authentication_view_model.dart';
-import 'package:brick_breaker/features/game/views/main_game_page.dart';
 import 'package:brick_breaker/features/onboarding/splash_view_model.dart';
 import 'package:brick_breaker/features/services/locator_service.dart';
 import 'package:brick_breaker/features/services/navigation_service.dart';
 import 'package:brick_breaker/routes/route_names.dart';
+import 'package:brick_breaker/routes/router.dart' as router;
 import 'package:brick_breaker/utils/dialog/dialog_manager.dart';
+import 'package:firebase_core/firebase_core.dart';
 // import 'package:brick_breaker/utils/widgets/modal.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:brick_breaker/routes/router.dart' as router;
+
 import 'features/services/dialog_service.dart';
 
 Future<void> main() async {
