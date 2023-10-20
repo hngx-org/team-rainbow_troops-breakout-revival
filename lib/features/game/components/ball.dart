@@ -39,11 +39,11 @@ class Ball extends BodyComponent<Forge2dGameWorld>
     switch (gameRef.gameLevel) {
       case GameLevel.one:
         if (other is Arena) {
-          body.linearVelocity = Vector2(120.0, -120.0);
+          body.linearVelocity = Vector2(1000.0, -1000.0);
         } else if (other is WallBrick) {
-          body.linearVelocity = Vector2(150.0, 150.0);
+          body.linearVelocity = Vector2(1200.0, 1200.0);
           game.breakoutAudio.playRockBreaking();
-          body.linearVelocity = Vector2(150.0, 150.0);
+          body.linearVelocity = Vector2(1000.0, 1000.0);
         }
         break;
       case GameLevel.two:
@@ -111,7 +111,7 @@ class Ball extends BodyComponent<Forge2dGameWorld>
 
   void playLevel(int level) {
     if (level == 1) {
-      body.linearVelocity = Vector2(120.0, 120.0);
+      body.linearVelocity = Vector2(1000.0, 1000.0);
     } else if (level == 2) {
       body.linearVelocity = Vector2(180.0, 180.0);
     } else if (level == 3) {
@@ -137,7 +137,7 @@ class Ball extends BodyComponent<Forge2dGameWorld>
     final fixtureDef = FixtureDef(shape);
 
     ball.createFixture(fixtureDef
-      ..density = 1.0
+      ..density = 3.0
       ..restitution = 1.0);
     return ball;
   }

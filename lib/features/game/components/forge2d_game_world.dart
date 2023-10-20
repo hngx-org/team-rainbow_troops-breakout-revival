@@ -1,4 +1,5 @@
 import 'package:brick_breaker/features/game/components/arena.dart';
+import 'package:brick_breaker/features/game/components/background_music.dart';
 import 'package:brick_breaker/features/game/components/ball.dart';
 import 'package:brick_breaker/features/game/components/brick_wall.dart';
 import 'package:brick_breaker/features/game/components/dead_zone.dart.dart';

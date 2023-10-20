@@ -111,6 +111,9 @@ class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
           color: (j ~/ 2 == 0)
               ? AppColors.brickColorPrimary
               : AppColors.brickColorSecondary,
+          color: (j ~/ 2 == 0)
+              ? AppColors.brickColorPrimary
+              : AppColors.brickColorSecondary,
           brickPosition: brickPosition,
         ));
         final randomColMulti = randomNumCols.nextInt(1) + 1.3;

@@ -1,7 +1,9 @@
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
 import 'package:brick_breaker/features/game/constants.dart';
 import 'package:brick_breaker/utils/constants.dart';
+import 'package:brick_breaker/utils/widgets/modal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class OverlayBuilder {
@@ -22,7 +24,7 @@ class OverlayBuilder {
     debugPrint(gameWorld.gameState.toString());
 
     final message =
-        (gameWorld.gameState == GameState.won) ? 'Yay, You won!' : 'Game over';
+        (gameWorld.gameState == GameState.won) ? const Modal() : const Text('Game over');
     return PostGameOverlay(message: message, game: gameWorld);
   }
 }
@@ -47,7 +49,7 @@ class PreGameOverlay extends StatelessWidget {
 class PostGameOverlay extends StatelessWidget {
   const PostGameOverlay({super.key, required this.message, required this.game});
 
-  final String message;
+  final dynamic message;
   final Forge2dGameWorld game;
   @override
   Widget build(BuildContext context) {
@@ -55,12 +57,25 @@ class PostGameOverlay extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            message,
-            style: GoogleFonts.russoOne(
-                color: AppColors.greenColor,
-                fontSize: 24,
-                fontWeight: FontWeight.w400),
+           Builder(
+            builder: (BuildContext context) {
+              if (message is String) {
+                // If message is a String, create a Text widget
+                return Text(
+                  message,
+                  style: GoogleFonts.russoOne(
+                      color: AppColors.greenColor,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w400),
+                );
+              } else if (message is Widget) {
+                // If message is a Widget, return it directly
+                return message;
+              } else {
+                // Handle other types of messages if needed
+                return Container();
+              }
+            },
           ),
           const SizedBox(
             height: 24,
@@ -80,11 +95,11 @@ Widget _resetGameButton(BuildContext context, Forge2dGameWorld game) {
         ? game.resetGame()
         : game.moveToNextLevel(),
     icon: (game.gameState == GameState.lost)
-        ? const Icon(Icons.replay_outlined)
-        : const Icon(Icons.play_arrow),
+        ? SvgPicture.asset('assets/images/Replay.svg', width: 24, height: 24, color: Colors.purple,)
+        : SvgPicture.asset('assets/images/play_arrow.svg', width: 24, height: 24, color: Colors.purple,),
     label: (game.gameState == GameState.lost)
-        ? const Text('Replay')
-        : const Text('Play next level'),
+        ? const Text('Replay', style: TextStyle(color: Colors.purple),)
+        : const Text('Play next level', style: TextStyle(color: Colors.purple),),
   );
 }
 
