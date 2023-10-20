@@ -1,5 +1,6 @@
 import 'package:brick_breaker/features/authentication/viewmodels/authentication_view_model.dart';
 import 'package:brick_breaker/features/game/views/main_game_page.dart';
+import 'package:brick_breaker/features/menu/views/menu_view.dart';
 import 'package:brick_breaker/features/onboarding/splash_view_model.dart';
 import 'package:brick_breaker/features/services/locator_service.dart';
 import 'package:brick_breaker/features/services/navigation_service.dart';
