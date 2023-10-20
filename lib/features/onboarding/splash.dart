@@ -1,4 +1,3 @@
-import 'package:brick_breaker/features/authentication/viewmodels/authentication_view_model.dart';
 import 'package:brick_breaker/features/onboarding/splash_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

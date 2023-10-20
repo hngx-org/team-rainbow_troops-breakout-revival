@@ -1,10 +1,15 @@
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
 import 'package:brick_breaker/features/game/constants.dart';
+import 'package:brick_breaker/features/services/locator_service.dart';
+import 'package:brick_breaker/features/services/navigation_service.dart';
 import 'package:brick_breaker/utils/constants.dart';
 import 'package:brick_breaker/utils/widgets/modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../routes/route_names.dart';
+
+NavigationService _navigationService = locator<NavigationService>();
 
 class OverlayBuilder {
   OverlayBuilder._();
@@ -13,9 +18,9 @@ class OverlayBuilder {
     return const PreGameOverlay();
   }
 
-  static Widget levelWidget(BuildContext context, Forge2dGameWorld gameWorld) {
-    return GameLevelWidget(game: gameWorld);
-  }
+  // static Widget levelWidget(BuildContext context, Forge2dGameWorld gameWorld) {
+  //   return GameLevelWidget(game: gameWorld);
+  // }
 
   static Widget postGame(BuildContext context, Forge2dGameWorld gameWorld) {
     assert(gameWorld.gameState == GameState.lost ||
@@ -23,8 +28,9 @@ class OverlayBuilder {
 
     debugPrint(gameWorld.gameState.toString());
 
-    final message =
-        (gameWorld.gameState == GameState.won) ? const Modal() : const Text('Game over');
+    final message = (gameWorld.gameState == GameState.won)
+        ? const Modal()
+        : const Text('Game over');
     return PostGameOverlay(message: message, game: gameWorld);
   }
 }
@@ -57,7 +63,7 @@ class PostGameOverlay extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-           Builder(
+          Builder(
             builder: (BuildContext context) {
               if (message is String) {
                 // If message is a String, create a Text widget
@@ -81,6 +87,25 @@ class PostGameOverlay extends StatelessWidget {
             height: 24,
           ),
           _resetGameButton(context, game),
+          SizedBox(
+            height: 24,
+          ),
+          OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: AppColors.brickColorPrimary)),
+              onPressed: () {
+                _navigationService.navigateTo(menu);
+              },
+              icon: SvgPicture.asset(
+                'assets/images/menu.svg',
+                width: 24,
+                height: 20,
+                color: Colors.purple,
+              ),
+              label: Text(
+                'Menu',
+                style: TextStyle(color: Colors.purple),
+              ))
         ],
       ),
     );
@@ -95,11 +120,27 @@ Widget _resetGameButton(BuildContext context, Forge2dGameWorld game) {
         ? game.resetGame()
         : game.moveToNextLevel(),
     icon: (game.gameState == GameState.lost)
-        ? SvgPicture.asset('assets/images/Replay.svg', width: 24, height: 24, color: Colors.purple,)
-        : SvgPicture.asset('assets/images/play_arrow.svg', width: 24, height: 24, color: Colors.purple,),
+        ? SvgPicture.asset(
+            'assets/images/Replay.svg',
+            width: 24,
+            height: 24,
+            color: Colors.purple,
+          )
+        : SvgPicture.asset(
+            'assets/images/play_arrow.svg',
+            width: 24,
+            height: 24,
+            color: Colors.purple,
+          ),
     label: (game.gameState == GameState.lost)
-        ? const Text('Replay', style: TextStyle(color: Colors.purple),)
-        : const Text('Play next level', style: TextStyle(color: Colors.purple),),
+        ? const Text(
+            'Replay',
+            style: TextStyle(color: Colors.purple),
+          )
+        : const Text(
+            'Play next level',
+            style: TextStyle(color: Colors.purple),
+          ),
   );
 }
 

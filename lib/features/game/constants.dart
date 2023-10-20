@@ -16,3 +16,9 @@ enum GameLevel {
   four,
   five,
 }
+
+///Brick State
+enum BrickState {
+  destroyed,
+  normal,
+}

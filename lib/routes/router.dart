@@ -1,6 +1,7 @@
 import 'package:brick_breaker/features/authentication/views/login_view.dart';
 import 'package:brick_breaker/features/authentication/views/signup_view.dart';
 import 'package:brick_breaker/features/game/views/main_game_page.dart';
+import 'package:brick_breaker/features/menu/views/about_game.dart';
 import 'package:brick_breaker/features/menu/views/menu_view.dart';
 import 'package:brick_breaker/features/onboarding/splash.dart';
 import 'package:brick_breaker/routes/route_names.dart';
@@ -11,7 +12,7 @@ class Routes {
     Widget page;
     switch (settings.name) {
       case splash:
-        page = SplashScreen();
+        page = const SplashScreen();
         break;
       case login:
         page = LoginView();
@@ -25,6 +26,9 @@ class Routes {
         break;
       case menu:
         page = MenuView();
+        break;
+      case gameinfo:
+        page = GameInfo();
         break;
       default:
         page = const Center(
