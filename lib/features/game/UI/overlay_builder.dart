@@ -29,7 +29,9 @@ class OverlayBuilder {
     debugPrint(gameWorld.gameState.toString());
 
     final message = (gameWorld.gameState == GameState.won)
-        ? const Modal()
+        ? Modal(
+            game: gameWorld,
+          )
         : const Text('Game over');
     return PostGameOverlay(message: message, game: gameWorld);
   }

@@ -1,8 +1,10 @@
+import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class Modal extends StatelessWidget {
-  const Modal({super.key});
+  final Forge2dGameWorld game;
+  const Modal({super.key, required this.game});
 
   @override
   Widget build(BuildContext context) {
@@ -63,13 +65,22 @@ class Modal extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SvgPicture.asset("assets/images/previous_play_pause.svg", width: 50, height: 50,),
-                  const SizedBox(width: 15,),
-                  SvgPicture.asset(
-                    "assets/images/Button_Continue.svg",
-                    // width: 125,
-                    // height: 125,
+                  /*        SvgPicture.asset(
+                    "assets/images/previous_play_pause.svg",
+                    width: 50,
+                    height: 50,
                   ),
+            */
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  IconButton(
+                      onPressed: game.moveToNextLevel,
+                      icon: const ImageIcon(
+                        AssetImage(
+                          "assets/images/Button_Continue.svg",
+                        ),
+                      ))
                 ],
               )
             ],
