@@ -58,7 +58,7 @@ class AuthViewModel extends ChangeNotifier {
     setBusy(false);
     if (result is bool) {
       if (result) {
-        _navigationService.navigateTo(gamepage);
+        _navigationService.navigateTo(menu);
       } else {
         await _dialogService.showDialog(
             title: "Login Failed",

@@ -1,26 +1,29 @@
+import 'package:brick_breaker/features/services/locator_service.dart';
+import 'package:brick_breaker/features/services/navigation_service.dart';
+import 'package:brick_breaker/routes/route_names.dart';
 import 'package:flutter/material.dart';
 import '../viewmodels/menu_view_model.dart';
 import '../../../utils/widgets/menu_button.dart';
+
+final NavigationService _navigationService = locator<NavigationService>();
 
 class MenuView extends StatelessWidget {
   final MenuButtonViewModel playButtonViewModel = MenuButtonViewModel(
     title: "Play",
     onPressed: () {
-      // Handle play button press logic here
+      _navigationService.navigateTo(gamepage);
     },
   );
 
   final MenuButtonViewModel pauseButtonViewModel = MenuButtonViewModel(
     title: "Settings",
-    onPressed: () {
-      // Handle pause button press logic here
-    },
+    onPressed: () {},
   );
 
   final MenuButtonViewModel stopButtonViewModel = MenuButtonViewModel(
     title: "Game Info",
     onPressed: () {
-      // Handle stop button press logic here
+      _navigationService.navigateTo(gameinfo);
     },
   );
 
