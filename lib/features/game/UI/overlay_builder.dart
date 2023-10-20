@@ -11,9 +11,9 @@ class OverlayBuilder {
     return const PreGameOverlay();
   }
 
-  static Widget levelWidget(BuildContext context, Forge2dGameWorld gameWorld) {
-    return GameLevelWidget(game: gameWorld);
-  }
+  // static Widget levelWidget(BuildContext context, Forge2dGameWorld gameWorld) {
+  //   return GameLevelWidget(game: gameWorld);
+  // }
 
   static Widget postGame(BuildContext context, Forge2dGameWorld gameWorld) {
     assert(gameWorld.gameState == GameState.lost ||

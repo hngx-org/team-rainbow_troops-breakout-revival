@@ -110,8 +110,8 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
   final breakoutAudio = BreakoutRevivalAudioPlayer();
 
   Future<void> _initializeGame() async {
-    ///AppBar with level
-    overlays.add('GameLevel');
+    // ///AppBar with level
+    // overlays.add('GameLevel');
     //Arena is the game playing ground.
     _arena = Arena();
     await add(_arena);
@@ -189,11 +189,6 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
     _ball.reset();
     _paddle.reset();
 
-//Removing the old brickWall before adding new one.
-    if (brickWall != null) {
-      remove(brickWall!);
-    }
-
     ///initializing new instance of the brick wall
     final brickWallPosition = Vector2(0.0, size.y * 0.075);
 
@@ -204,6 +199,13 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
             rows: i + 2,
             columns: i + 2,
             gap: 1.0));
+
+    //Removing the old brickWall before adding new one.
+    if (brickWall != null) {
+      world.remove(brickWall!);
+    } else if (brickWallNextLevel != null) {
+      world.remove(brickWallNextLevel!);
+    }
 
     if (gameLevel.name.isNotEmpty) {
       brickWallNextLevel = brickLevel[gameLevel.index];

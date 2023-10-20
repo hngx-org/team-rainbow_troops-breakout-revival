@@ -1,5 +1,6 @@
 import 'package:brick_breaker/features/game/components/ball.dart';
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
+import 'package:brick_breaker/features/game/constants.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
@@ -13,25 +14,25 @@ class WallBrick extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
   WallBrick(
       {required this.size, required this.color, required this.brickPosition});
 
-  var destroyed = false;
+  BrickState brickState = BrickState.normal;
 
   @override
   Future<void> onLoad() {
-    final brickSprite = Sprite(game.images.fromCache('brick_seven.png'));
-    add(
-      SpriteComponent(
-        sprite: brickSprite,
-        size: Vector2(size.width, size.height),
-        anchor: Anchor.center,
-      ),
-    );
+    // final brickSprite = Sprite(game.images.fromCache('brick_seven.png'));
+    // add(
+    //   SpriteComponent(
+    //     sprite: brickSprite,
+    //     size: Vector2(size.width, size.height),
+    //     anchor: Anchor.center,
+    //   ),
+    // );
     return super.onLoad();
   }
 
   @override
   void beginContact(Object other, Contact contact) {
-    if (other is Ball && !destroyed) {
-      destroyed = true;
+    if (other is Ball) {
+      hit();
       game.add(
         SpriteAnimationComponent(
             animation: game.cracker.clone(),
@@ -40,11 +41,16 @@ class WallBrick extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
             size: Vector2(size.width * 4.0, size.height * 4.0),
             removeOnFinish: true),
       );
-      debugPrint('$destroyed ${body.isActive} ${body.toString()}');
     }
+    super.beginContact(other, contact);
   }
 
-  late SpriteAnimation cracker;
+  void hit() {
+    if (brickState == BrickState.normal) {
+      brickState = BrickState.destroyed;
+      debugPrint('$brickState ${body.isActive} ${body.toString()}');
+    }
+  }
 
   @override
   void render(Canvas canvas) {
@@ -55,7 +61,7 @@ class WallBrick extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
     final rectangle = body.fixtures.first.shape as PolygonShape;
 
     final paint = Paint()
-      ..color = Colors.transparent
+      ..color = color
       ..style = PaintingStyle.fill;
 
     canvas.drawRect(

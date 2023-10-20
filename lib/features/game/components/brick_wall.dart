@@ -3,10 +3,10 @@ import 'dart:math';
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
 import 'package:brick_breaker/features/game/components/game_brick.dart';
 import 'package:brick_breaker/features/game/constants.dart';
+import 'package:brick_breaker/utils/constants.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/painting.dart';
 
 class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
   final Vector2 position;
@@ -26,33 +26,28 @@ class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
   void update(double dt) {
     // Check for bricks in the wall that have been flagged for removal.
     for (final child in [...children]) {
-      if (child is WallBrick && child.destroyed) {
+      if (child is WallBrick && child.brickState == BrickState.destroyed) {
         for (final fixture in [...child.body.fixtures]) {
           child.body.destroyFixture(fixture);
           debugPrint(fixture.body.toString());
         }
         gameRef.world.destroyBody(child.body);
-        remove(child);
-        debugPrint(child.body.toString());
+        gameRef.remove(child);
+        debugPrint('${gameRef.isRemoved} ${child.body.isActive}');
       }
     }
 
-    Future.delayed(const Duration(milliseconds: 600), () {
-      if (children.isEmpty && gameRef.gameState == GameState.running) {
-        gameRef.gameState = GameState.won;
-        debugPrint('game level before: ${gameRef.gameLevel.name}');
-        gameRef.gameLevel = GameLevel.values[gameRef.gameLevel.index + 1];
-        debugPrint('game level After: ${gameRef.gameLevel.name}');
-      }
-    });
+    if (children.isEmpty) {
+      gameRef.gameState = GameState.won;
+      debugPrint('game level before: ${gameRef.gameLevel.name}');
+      gameRef.gameLevel = GameLevel.values[gameRef.gameLevel.index + 1];
+      debugPrint('game level After: ${gameRef.gameLevel.name}');
+    }
     super.update(dt);
   }
 
-  late final List<Color> _colors;
-  late SpriteAnimation cracker;
   @override
   Future<FutureOr<void>> onLoad() async {
-    _colors = _colorSet(rows);
     await _buildWall();
   }
 
@@ -66,12 +61,12 @@ class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
   static const saturation = 0.80;
   static const lightness = 0.5;
 
-  List<Color> _colorSet(int count) => List<Color>.generate(
-      count,
-      (index) => HSLColor.fromAHSL(
-              transparency, index / count * 360, saturation, lightness)
-          .toColor(),
-      growable: false);
+  // List<Color> _colorSet(int count) => List<Color>.generate(
+  //     count,
+  //     (index) => HSLColor.fromAHSL(
+  //             transparency, index / count * 360, saturation, lightness)
+  //         .toColor(),
+  //     growable: false);
 
   Future<void> _buildWall() async {
     final wallSize = size ??
@@ -87,21 +82,25 @@ class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
 
     // Calculate the number of rows to be displayed on each side
     final rowsPerSide = rows ~/ 2; // Half the number of rows
-
-    final brickSize = Size(wallSize.width / 10.0, wallSize.height / 10.0);
-    var brickPosition = Vector2.zero();
-    if (rows == 1) {
-      brickPosition = Vector2(
-        brickSize.width * 3.0 + gap,
-        brickSize.height / 2.0 + position.y,
-      );
+    final Size? brickSize;
+    if (gameRef.gameLevel.index < 1) {
+      brickSize = Size(wallSize.width / 10.0, wallSize.height / 10.0);
     } else {
+      brickSize = Size(wallSize.width / 20.0, wallSize.height / 20.0);
+    }
+    var brickPosition = Vector2.zero();
+    // if (rows == 1) {
+    brickPosition = Vector2(
+      brickSize.width * 3.0 + gap,
+      brickSize.height / 2.0 + position.y,
+    );
+    /*  } else {
       brickPosition = Vector2(
         brickSize.width * 1.0 + gap,
         brickSize.height / 2.0 + position.y,
       );
     }
-
+ */
     Random randomNumRows = Random(10);
     Random randomNumCols = Random();
 
@@ -109,17 +108,19 @@ class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
       for (var j = 0; j < columns; j++) {
         await add(WallBrick(
           size: brickSize,
-          color: _colors[i],
+          color: (j ~/ 2 == 0)
+              ? AppColors.brickColorPrimary
+              : AppColors.brickColorSecondary,
           brickPosition: brickPosition,
         ));
         final randomColMulti = randomNumCols.nextInt(1) + 1.3;
         debugPrint(randomColMulti.toString());
-        if (rows < 3) {
-          brickPosition += Vector2(brickSize.width * 1.0 + gap, 0.0);
-        } else {
-          brickPosition +=
-              Vector2(brickSize.width * randomColMulti.toDouble(), 0.0);
-        }
+        //if (rows < 3) {
+        brickPosition += Vector2(brickSize.width * 1.0 + gap, 0.0);
+        // } else {
+        //   brickPosition +=
+        //       Vector2(brickSize.width * randomColMulti.toDouble(), 0.0);
+        // }
       }
       if (rows < 3) {
         // Calculate the horizontal position for the next row based on the current row
