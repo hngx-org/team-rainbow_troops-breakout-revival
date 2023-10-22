@@ -1,10 +1,14 @@
+import 'dart:math';
+
 import 'package:brick_breaker/features/game/components/ball.dart';
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
 import 'package:brick_breaker/features/game/constants.dart';
+import 'package:brick_breaker/utils/constants.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
+import 'package:flame/particles.dart' as particle;
 
 class WallBrick extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
   final Size size;
@@ -15,7 +19,12 @@ class WallBrick extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
       {required this.size, required this.color, required this.brickPosition});
 
   BrickState brickState = BrickState.normal;
+  late final ParticleSystemComponent particleComponent;
 
+  Random rnd = Random();
+
+  Vector2 randomVectorGenerator() =>
+      ((Vector2.random(rnd)) - Vector2.random(rnd)) * 800;
   @override
   Future<void> onLoad() {
     // final brickSprite = Sprite(game.images.fromCache('brick_seven.png'));
@@ -26,6 +35,20 @@ class WallBrick extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
     //     anchor: Anchor.center,
     //   ),
     // );
+    particleComponent = ParticleSystemComponent(
+        particle: particle.Particle.generate(
+      count: 50,
+      lifespan: 0.5,
+      generator: (i) => particle.AcceleratedParticle(
+        acceleration: randomVectorGenerator(),
+        speed: randomVectorGenerator(),
+        position: brickPosition.clone(),
+        child: particle.CircleParticle(
+          radius: 1,
+          paint: Paint()..color = AppColors.brickColorPrimary,
+        ),
+      ),
+    ));
     return super.onLoad();
   }
 
@@ -33,14 +56,15 @@ class WallBrick extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
   void beginContact(Object other, Contact contact) {
     if (other is Ball) {
       hit();
-      game.add(
-        SpriteAnimationComponent(
-            animation: game.cracker.clone(),
-            anchor: Anchor.center,
-            position: body.position,
-            size: Vector2(size.width * 4.0, size.height * 4.0),
-            removeOnFinish: true),
-      );
+      game.add(particleComponent);
+      // game.add(
+      //   SpriteAnimationComponent(
+      //       animation: game.cracker.clone(),
+      //       anchor: Anchor.center,
+      //       position: body.position,
+      //       size: Vector2(size.width * 4.0, size.height * 4.0),
+      //       removeOnFinish: true),
+      // );
     }
     super.beginContact(other, contact);
   }

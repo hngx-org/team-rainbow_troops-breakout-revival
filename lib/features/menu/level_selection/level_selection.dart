@@ -3,19 +3,17 @@ import 'package:brick_breaker/features/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 
 class LevelSelectionScreen extends StatelessWidget {
-  final List<String> levels = [
-    'Easy',
-    'Medium',
-    'Hard'
-  ]; // List of available levels
+  final List<String> levels = ['Easy', 'Medium', 'Hard'];
+
+  LevelSelectionScreen({super.key}); // List of available levels
 
   @override
   Widget build(BuildContext context) {
-    NavigationService _navigationService = locator<NavigationService>();
+    NavigationService navigationService = locator<NavigationService>();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Level'),
+        title: const Text('Select Level'),
       ),
       body: ListView.builder(
         itemCount: levels.length,

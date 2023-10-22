@@ -1,11 +1,16 @@
+import 'dart:math';
+
 import 'package:brick_breaker/features/game/components/arena.dart';
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
 import 'package:brick_breaker/features/game/components/game_brick.dart';
+import 'package:brick_breaker/features/game/components/paddle.dart';
 import 'package:brick_breaker/features/game/constants.dart';
+import 'package:brick_breaker/utils/constants.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
+import 'package:flame/particles.dart' as particle;
 import 'package:flame_forge2d/flame_forge2d.dart';
-import 'package:flutter/painting.dart';
+import 'package:flutter/material.dart';
 
 class Ball extends BodyComponent<Forge2dGameWorld>
     with HasGameRef<Forge2dGameWorld>, ContactCallbacks {
@@ -25,14 +30,30 @@ class Ball extends BodyComponent<Forge2dGameWorld>
     radius: 0.95,
   );
 
-  // @override
-  // void beginContact(Object other, Contact contact) {
-  //   if (other is Arena) {
-  //     body.linearVelocity = Vector2(75.0, 75.0);
-  //   } else if (other is WallBrick) {
-  //     body.linearVelocity = Vector2(150.0, 150.0);
-  //   }
-  // }
+  Random rnd = Random();
+  late final ParticleSystemComponent particleComponent;
+
+  Vector2 randomVectorGenerator() =>
+      ((Vector2.random(rnd)) - Vector2.random(rnd)) * 500;
+
+  @override
+  Future<void> onLoad() {
+    particleComponent = ParticleSystemComponent(
+        particle: particle.Particle.generate(
+      count: 20,
+      lifespan: 0.3,
+      generator: (i) => particle.AcceleratedParticle(
+        acceleration: randomVectorGenerator(),
+        speed: randomVectorGenerator(),
+        position: ballPosition.clone(),
+        child: particle.CircleParticle(
+          radius: 1,
+          paint: Paint()..color = AppColors.playerColor,
+        ),
+      ),
+    ));
+    return super.onLoad();
+  }
 
   @override
   void beginContact(Object other, Contact contact) {
@@ -41,9 +62,12 @@ class Ball extends BodyComponent<Forge2dGameWorld>
         if (other is Arena) {
           body.linearVelocity = Vector2(100.0, -100.0);
         } else if (other is WallBrick) {
-          body.linearVelocity = Vector2(150.0, 150.0);
           game.breakoutAudio.playRockBreaking();
-          // body.linearVelocity = Vector2(1000.0, 1000.0);
+
+          body.linearVelocity = Vector2(150.0, 150.0);
+        } else if (other is Paddle) {
+          game.add(particleComponent);
+          body.linearVelocity = Vector2(-100, -100);
         }
         break;
       case GameLevel.two:
@@ -52,6 +76,9 @@ class Ball extends BodyComponent<Forge2dGameWorld>
         } else if (other is WallBrick) {
           game.breakoutAudio.playRockBreaking();
           body.linearVelocity = Vector2(200.0, 200.0);
+        } else if (other is Paddle) {
+          body.linearVelocity = Vector2(170.0, 170.0);
+          gameRef.add(particleComponent);
         }
         break;
       case GameLevel.three:
@@ -60,6 +87,9 @@ class Ball extends BodyComponent<Forge2dGameWorld>
         } else if (other is WallBrick) {
           game.breakoutAudio.playRockBreaking();
           body.linearVelocity = Vector2(250.0, 250.0);
+        } else if (other is Paddle) {
+          body.linearVelocity = Vector2(170.0, 170.0);
+          gameRef.add(particleComponent);
         }
         break;
       case GameLevel.four:
@@ -68,6 +98,9 @@ class Ball extends BodyComponent<Forge2dGameWorld>
         } else if (other is WallBrick) {
           game.breakoutAudio.playRockBreaking();
           body.linearVelocity = Vector2(300.0, 300.0);
+        } else if (other is Paddle) {
+          body.linearVelocity = Vector2(170.0, 170.0);
+          gameRef.add(particleComponent);
         }
         break;
       case GameLevel.five:
@@ -76,6 +109,9 @@ class Ball extends BodyComponent<Forge2dGameWorld>
         } else if (other is WallBrick) {
           game.breakoutAudio.playRockBreaking();
           body.linearVelocity = Vector2(350.0, 350.0);
+        } else if (other is Paddle) {
+          body.linearVelocity = Vector2(170.0, 170.0);
+          gameRef.add(particleComponent);
         }
         break;
       default:
@@ -85,6 +121,9 @@ class Ball extends BodyComponent<Forge2dGameWorld>
           body.linearVelocity = Vector2(150.0, 150.0);
           game.breakoutAudio.playRockBreaking();
           body.linearVelocity = Vector2(150.0, 150.0);
+        } else if (other is Paddle) {
+          body.linearVelocity = Vector2(170.0, 170.0);
+          gameRef.add(particleComponent);
         }
     }
   }

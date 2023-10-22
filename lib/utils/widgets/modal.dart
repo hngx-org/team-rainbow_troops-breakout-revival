@@ -1,4 +1,5 @@
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
+import 'package:brick_breaker/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -46,9 +47,9 @@ class Modal extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              const Text(
-                "Level 1",
-                style: TextStyle(
+              Text(
+                "Level ${game.gameLevel.index}",
+                style: const TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.w700,
                     color: Color(0xFFA9B6CE)),
@@ -65,22 +66,27 @@ class Modal extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  /*        SvgPicture.asset(
-                    "assets/images/previous_play_pause.svg",
-                    width: 50,
-                    height: 50,
+                  IconButton(
+                    onPressed: () => game.resetGame(true),
+                    icon: const Icon(
+                      Icons.replay,
+                      size: 50,
+                      color: AppColors.brickColorSecondary,
+                    ),
                   ),
-            */
                   const SizedBox(
                     width: 15,
                   ),
                   IconButton(
-                      onPressed: game.moveToNextLevel,
-                      icon: const ImageIcon(
-                        AssetImage(
-                          "assets/images/Button_Continue.svg",
-                        ),
-                      ))
+                    onPressed: game.moveToNextLevel,
+                    icon: const ImageIcon(
+                      AssetImage(
+                        "assets/images/play.png",
+                      ),
+                      size: 50,
+                      color: AppColors.brickColorSecondary,
+                    ),
+                  ),
                 ],
               )
             ],

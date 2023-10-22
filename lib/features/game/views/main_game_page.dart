@@ -3,7 +3,6 @@ import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
 import 'package:brick_breaker/utils/constants.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class MainGamePage extends StatefulWidget {
   const MainGamePage({super.key});
@@ -21,15 +20,16 @@ class MainGameState extends State<MainGamePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        centerTitle: true,
+        /* centerTitle: true,
         title: Text(
-          'Level: ${forge2dGameWorld.gameLevel.index + 1}',
+          'Level: ${forge2dGameWorld.gameLevel.name}',
           style: GoogleFonts.mooLahLah(
             fontSize: 28,
             color: AppColors.brickColorSecondary,
             fontWeight: FontWeight.w300,
           ),
         ),
+*/
         actions: [
           IconButton(
               onPressed: forge2dGameWorld.pause,
@@ -58,7 +58,7 @@ class MainGameState extends State<MainGamePage> {
               overlayBuilderMap: const {
                 'PreGame': OverlayBuilder.preGame,
                 'PostGame': OverlayBuilder.postGame,
-                // 'GameLevel': OverlayBuilder.levelWidget,
+                'GameLevel': OverlayBuilder.levelWidget,
               },
             )),
       ),

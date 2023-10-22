@@ -1,5 +1,4 @@
 import 'package:brick_breaker/utils/constants.dart';
-import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
@@ -24,7 +23,7 @@ class Paddle extends BodyComponent with DragCallbacks {
 
   @override
   Future<void> onLoad() {
-    final paddleSprite = Sprite(game.images.fromCache('ice_paddle.png'));
+    // final paddleSprite = Sprite(game.images.fromCache('ice_paddle.png'));
     // add(
     //   SpriteComponent(
     //     sprite: paddleSprite,

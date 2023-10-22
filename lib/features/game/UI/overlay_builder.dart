@@ -18,9 +18,9 @@ class OverlayBuilder {
     return const PreGameOverlay();
   }
 
-  // static Widget levelWidget(BuildContext context, Forge2dGameWorld gameWorld) {
-  //   return GameLevelWidget(game: gameWorld);
-  // }
+  static Widget levelWidget(BuildContext context, Forge2dGameWorld gameWorld) {
+    return GameLevelWidget(game: gameWorld);
+  }
 
   static Widget postGame(BuildContext context, Forge2dGameWorld gameWorld) {
     assert(gameWorld.gameState == GameState.lost ||
@@ -32,7 +32,7 @@ class OverlayBuilder {
         ? Modal(
             game: gameWorld,
           )
-        : const Text('Game over');
+        : 'Game Over';
     return PostGameOverlay(message: message, game: gameWorld);
   }
 }
@@ -88,9 +88,11 @@ class PostGameOverlay extends StatelessWidget {
           const SizedBox(
             height: 24,
           ),
-          _resetGameButton(context, game),
+          (message is Widget)
+              ? const SizedBox.shrink()
+              : _resetGameButton(context, game),
           const SizedBox(
-            height: 24,
+            height: 10,
           ),
           OutlinedButton.icon(
               style: OutlinedButton.styleFrom(
@@ -119,7 +121,7 @@ Widget _resetGameButton(BuildContext context, Forge2dGameWorld game) {
     style: OutlinedButton.styleFrom(
         side: const BorderSide(color: AppColors.brickColorPrimary)),
     onPressed: () => (game.gameState == GameState.lost)
-        ? game.resetGame()
+        ? game.resetGame(false)
         : game.moveToNextLevel(),
     icon: (game.gameState == GameState.lost)
         ? SvgPicture.asset(
@@ -152,15 +154,18 @@ class GameLevelWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Align(
-            alignment: const Alignment(0.0, -0.95),
-            child: Text(
+    return Align(
+      alignment: const Alignment(0.0, -1.18),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(
+              width: 20,
+            ),
+            Text(
               'Level: ${game.gameLevel.index + 1}',
               style: GoogleFonts.mooLahLah(
                 fontSize: 28,
@@ -168,10 +173,10 @@ class GameLevelWidget extends StatelessWidget {
                 fontWeight: FontWeight.w300,
               ),
             ),
-          ),
-          Align(
-            alignment: const Alignment(0.0, -0.97),
-            child: IconButton(
+            const SizedBox(
+              width: 40,
+            ),
+/*             IconButton(
                 onPressed: game.pause,
                 icon: /* (game.gameState == GameState.running)
                     ? const ImageIcon(
@@ -184,9 +189,9 @@ class GameLevelWidget extends StatelessWidget {
                   AssetImage('assets/images/play.png'),
                   size: 35,
                   color: AppColors.brickColorSecondary,
-                )),
-          )
-        ],
+                )) */
+          ],
+        ),
       ),
     );
   }

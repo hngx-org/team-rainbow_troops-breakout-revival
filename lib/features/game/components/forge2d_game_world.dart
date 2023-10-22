@@ -110,8 +110,8 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
   final breakoutAudio = BreakoutRevivalAudioPlayer();
 
   Future<void> _initializeGame() async {
-    // ///AppBar with level
-    // overlays.add('GameLevel');
+    ///AppBar with level
+    overlays.add('GameLevel');
     //Arena is the game playing ground.
     _arena = Arena();
     await add(_arena);
@@ -162,11 +162,14 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
   }
 
   ///Reset Game method to be called at postGame state Won/Lost
-  Future<void> resetGame() async {
+  Future<void> resetGame(bool isCompleted) async {
 //Game state initializing with resetting components to their initial position
     gameState = GameState.initializing;
     _ball.reset();
     _paddle.reset();
+    if (isCompleted) {
+      gameLevel = GameLevel.values[gameLevel.index - 1];
+    }
     if (brickWallNextLevel != null) {
       await brickWallNextLevel?.reset();
     } else {
