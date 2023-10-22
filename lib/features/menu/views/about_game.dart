@@ -18,9 +18,9 @@ class GameInfo extends StatelessWidget {
           backgroundColor: Colors.transparent,
           title: const Text(
             'About Game',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.brickColorPrimary),
           ),
-          leading: const Icon(Icons.arrow_back_ios),
+          leading: const Icon(Icons.arrow_back_ios, color: AppColors.brickColorPrimary,),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
@@ -33,39 +33,59 @@ class GameInfo extends StatelessWidget {
                   'through the captivating world '
                   'of Breakout, where fast-paced '
                   'action and strategic thinking collide. '
+                  '\n'
+                  '\n'
                   'Engage in an addictive gameplay '
                   'experience as you take control '
                   'of the paddle and aim to demolish '
                   'a vibrant array of colorful bricks. '
+                  '\n'
+                  '\n'
                   'Utilize your reflexes and precision '
                   'to skillfully bounce the ball '
                   'off the paddle, smashing through '
                   'layers of obstacles and unlocking '
                   'exciting power-ups along the way. '
+                  '\n'
+                  '\n'
                   'With each level presenting new '
                   'challenges and intricately designed '
                   'layouts, immerse yourself in a '
                   'dynamic arcade adventure as you  '
                   'aim for the ultimate high score '
                   '\n'
-                  '\nBegin the game by taping the main button'
-                  '\n'
-                  // '\nAdjust the speed and size of ball using the settings'
+                  '\nBegin the game by tapping the main button'
                   '\n',
-                  // '\nSelect the game level using the Game levels button',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white24),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
+                const SizedBox(height: 16.0),
                 OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                            color: AppColors.brickColorPrimary)),
-                    onPressed: () {
-                      navigationService.navigateTo(menu);
-                    },
-                    child: const Text(
-                      'Menu',
-                      style: TextStyle(color: AppColors.brickColorPrimary),
-                    ))
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: AppColors.brickColorPrimary),
+                    padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  onPressed: () {
+                    navigationService.navigateTo(menu);
+                  },
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.menu, color: AppColors.brickColorPrimary),
+                      SizedBox(width: 8.0),
+                      Text(
+                        'Menu',
+                        style: TextStyle(
+                          color: AppColors.brickColorPrimary,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
