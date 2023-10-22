@@ -62,11 +62,27 @@ class Modal extends StatelessWidget {
                     color: Colors.white),
               ),
               const SizedBox(height: 10),
-              SvgPicture.asset(
-                "assets/images/Button_Continue.svg",
-                // width: 125,
-                // height: 125,
-              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  /*        SvgPicture.asset(
+                    "assets/images/previous_play_pause.svg",
+                    width: 50,
+                    height: 50,
+                  ),
+            */
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  IconButton(
+                      onPressed: game.moveToNextLevel,
+                      icon: const ImageIcon(
+                        AssetImage(
+                          "assets/images/Button_Continue.svg",
+                        ),
+                      ))
+                ],
+              )
             ],
           ),
         ),

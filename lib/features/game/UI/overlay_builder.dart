@@ -1,10 +1,15 @@
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
 import 'package:brick_breaker/features/game/constants.dart';
+import 'package:brick_breaker/features/services/locator_service.dart';
+import 'package:brick_breaker/features/services/navigation_service.dart';
 import 'package:brick_breaker/utils/constants.dart';
 import 'package:brick_breaker/utils/widgets/modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../routes/route_names.dart';
+
+NavigationService _navigationService = locator<NavigationService>();
 
 class OverlayBuilder {
   OverlayBuilder._();
@@ -24,7 +29,9 @@ class OverlayBuilder {
     debugPrint(gameWorld.gameState.toString());
 
     final message = (gameWorld.gameState == GameState.won)
-        ? const Modal(game: gameWorld)
+        ? Modal(
+            game: gameWorld,
+          )
         : const Text('Game over');
     return PostGameOverlay(message: message, game: gameWorld);
   }
@@ -82,6 +89,25 @@ class PostGameOverlay extends StatelessWidget {
             height: 24,
           ),
           _resetGameButton(context, game),
+          const SizedBox(
+            height: 24,
+          ),
+          OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: AppColors.brickColorPrimary)),
+              onPressed: () {
+                _navigationService.navigateTo(menu);
+              },
+              icon: SvgPicture.asset(
+                'assets/images/menu.svg',
+                width: 24,
+                height: 20,
+                color: Colors.purple,
+              ),
+              label: const Text(
+                'Menu',
+                style: TextStyle(color: Colors.purple),
+              ))
         ],
       ),
     );

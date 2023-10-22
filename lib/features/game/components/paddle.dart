@@ -111,10 +111,10 @@ class Paddle extends BodyComponent with DragCallbacks {
     final mouseJointDef = MouseJointDef()
       ..bodyA = ground.body
       ..bodyB = body
-      ..frequencyHz = 5.0
+      ..frequencyHz = 10.0
       ..dampingRatio = 0.9
       ..collideConnected = false
-      ..maxForce = 2000.0 * body.mass;
+      ..maxForce = 5000.0 * body.mass;
 
     _mouseJoint = MouseJoint(mouseJointDef);
     world.createJoint(_mouseJoint!);
