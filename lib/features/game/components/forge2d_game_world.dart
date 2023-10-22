@@ -29,6 +29,7 @@ class Forge2dGameWorld extends Forge2DGame with DragCallbacks, TapCallbacks {
 
   GameState gameState = GameState.initializing;
   GameLevel gameLevel = GameLevel.one;
+  PowerState powerState = PowerState.notOn;
 
   @override
   Color backgroundColor() => AppColors.backgroundColor;

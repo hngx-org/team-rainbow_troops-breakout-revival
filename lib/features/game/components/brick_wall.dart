@@ -61,13 +61,6 @@ class BrickWall extends Component with HasGameRef<Forge2dGameWorld> {
   static const saturation = 0.80;
   static const lightness = 0.5;
 
-  // List<Color> _colorSet(int count) => List<Color>.generate(
-  //     count,
-  //     (index) => HSLColor.fromAHSL(
-  //             transparency, index / count * 360, saturation, lightness)
-  //         .toColor(),
-  //     growable: false);
-
   Future<void> _buildWall() async {
     final wallSize = size ??
         Size(

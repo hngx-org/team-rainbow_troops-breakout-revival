@@ -1,5 +1,8 @@
 import 'package:brick_breaker/features/game/UI/overlay_builder.dart';
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
+import 'package:brick_breaker/features/services/locator_service.dart';
+import 'package:brick_breaker/features/services/navigation_service.dart';
+import 'package:brick_breaker/routes/route_names.dart';
 import 'package:brick_breaker/utils/constants.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +17,21 @@ class MainGamePage extends StatefulWidget {
 class MainGameState extends State<MainGamePage> {
   // instance of forge2dGameWorld component
   final forge2dGameWorld = Forge2dGameWorld();
+  NavigationService navigationService = locator<NavigationService>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        leading: Builder(builder: (BuildContext context) {
+          return IconButton(
+              onPressed: () {
+                navigationService.navigateTo(menu);
+              },
+              icon: const Icon(Icons.arrow_back,
+                  color: AppColors.brickColorSecondary));
+        }),
         /* centerTitle: true,
         title: Text(
           'Level: ${forge2dGameWorld.gameLevel.name}',

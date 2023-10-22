@@ -18,9 +18,18 @@ class GameInfo extends StatelessWidget {
           backgroundColor: Colors.transparent,
           title: const Text(
             'About Game',
-            style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.brickColorPrimary),
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.brickColorPrimary),
           ),
-          leading: const Icon(Icons.arrow_back_ios, color: AppColors.brickColorPrimary,),
+          leading: IconButton(
+              onPressed: () {
+                navigationService.navigateTo(menu);
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                color: AppColors.brickColorPrimary,
+              )),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
@@ -56,13 +65,17 @@ class GameInfo extends StatelessWidget {
                   '\n'
                   '\nBegin the game by tapping the main button'
                   '\n',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                 ),
                 const SizedBox(height: 16.0),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: AppColors.brickColorPrimary),
-                    padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16.0, horizontal: 24.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),

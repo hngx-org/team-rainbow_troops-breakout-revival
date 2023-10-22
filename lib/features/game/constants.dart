@@ -22,3 +22,5 @@ enum BrickState {
   destroyed,
   normal,
 }
+
+enum PowerState { on, notOn }

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:brick_breaker/features/game/components/ball.dart';
 import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
+import 'package:brick_breaker/features/game/components/paddle_power.dart';
 import 'package:brick_breaker/features/game/constants.dart';
 import 'package:brick_breaker/utils/constants.dart';
 import 'package:flame/components.dart';
@@ -20,6 +21,7 @@ class WallBrick extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
 
   BrickState brickState = BrickState.normal;
   late final ParticleSystemComponent particleComponent;
+  late final PaddlePower paddlePower;
 
   Random rnd = Random();
 
@@ -49,6 +51,7 @@ class WallBrick extends BodyComponent<Forge2dGameWorld> with ContactCallbacks {
         ),
       ),
     ));
+    paddlePower = PaddlePower(pPowerPosition: brickPosition);
     return super.onLoad();
   }
 
