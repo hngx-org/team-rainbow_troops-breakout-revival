@@ -22,6 +22,7 @@ class MainGameState extends State<MainGamePage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         centerTitle: true,
+        iconTheme: const IconThemeData(color: AppColors.brickColorPrimary),
         title: Text(
           'Level: ${forge2dGameWorld.gameLevel.index + 1}',
           style: GoogleFonts.mooLahLah(
