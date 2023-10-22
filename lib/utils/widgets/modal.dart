@@ -1,14 +1,15 @@
+import 'package:brick_breaker/features/game/components/forge2d_game_world.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-
 class Modal extends StatelessWidget {
-  const Modal({super.key});
+  final Forge2dGameWorld game;
+  const Modal({super.key, required this.game});
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: const Color(0xff3e4c65) ,
+      backgroundColor: const Color(0xff3e4c65),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(25),
       ),
@@ -48,26 +49,24 @@ class Modal extends StatelessWidget {
               const Text(
                 "Level 1",
                 style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFFA9B6CE)
-                ),
+                    fontSize: 30,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFFA9B6CE)),
               ),
               const SizedBox(height: 10),
               const Text(
                 "COMPLETE",
                 style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white
-                ),
+                    fontSize: 30,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white),
               ),
               const SizedBox(height: 10),
               SvgPicture.asset(
-                    "assets/images/Button_Continue.svg",
-                    // width: 125,
-                    // height: 125,
-                  ),
+                "assets/images/Button_Continue.svg",
+                // width: 125,
+                // height: 125,
+              ),
             ],
           ),
         ),

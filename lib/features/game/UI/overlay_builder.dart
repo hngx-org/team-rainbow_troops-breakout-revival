@@ -23,8 +23,9 @@ class OverlayBuilder {
 
     debugPrint(gameWorld.gameState.toString());
 
-    final message =
-        (gameWorld.gameState == GameState.won) ? const Modal() : const Text('Game over');
+    final message = (gameWorld.gameState == GameState.won)
+        ? const Modal(game: gameWorld)
+        : const Text('Game over');
     return PostGameOverlay(message: message, game: gameWorld);
   }
 }
@@ -57,7 +58,7 @@ class PostGameOverlay extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-           Builder(
+          Builder(
             builder: (BuildContext context) {
               if (message is String) {
                 // If message is a String, create a Text widget
@@ -95,11 +96,27 @@ Widget _resetGameButton(BuildContext context, Forge2dGameWorld game) {
         ? game.resetGame()
         : game.moveToNextLevel(),
     icon: (game.gameState == GameState.lost)
-        ? SvgPicture.asset('assets/images/Replay.svg', width: 24, height: 24, color: Colors.purple,)
-        : SvgPicture.asset('assets/images/play_arrow.svg', width: 24, height: 24, color: Colors.purple,),
+        ? SvgPicture.asset(
+            'assets/images/Replay.svg',
+            width: 24,
+            height: 24,
+            color: Colors.purple,
+          )
+        : SvgPicture.asset(
+            'assets/images/play_arrow.svg',
+            width: 24,
+            height: 24,
+            color: Colors.purple,
+          ),
     label: (game.gameState == GameState.lost)
-        ? const Text('Replay', style: TextStyle(color: Colors.purple),)
-        : const Text('Play next level', style: TextStyle(color: Colors.purple),),
+        ? const Text(
+            'Replay',
+            style: TextStyle(color: Colors.purple),
+          )
+        : const Text(
+            'Play next level',
+            style: TextStyle(color: Colors.purple),
+          ),
   );
 }
 
